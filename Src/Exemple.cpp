@@ -220,16 +220,16 @@ static void idle(void) {
 static void keyboard(unsigned char key, int x, int y) {
 	printf("K  %4c %4d %4d\n", key, x, y);
 	switch (key) {
-	case 0x1B:
+	case 0x1B: // Echape
 		exit(0);
 		break;
-	case 0x0D: { 
+	case 0x0D: { // Entree
 			static int anim = 1;
 			anim = !anim;
 			glutIdleFunc((anim) ? idle : NULL);
 		}
 		break;
-	case 0x20:
+	case 0x20: // Espace
 		if (!isLine) {
 			printf("Passe en mode fil de fer\n");
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
