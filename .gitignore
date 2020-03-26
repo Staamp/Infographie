@@ -1,20 +1,5 @@
+.vs/
 
-.vs/Infographie/v16/.suo
 
-.vs/Infographie/v16/Browse.VC.db
 
-.vs/ProjectSettings.json
-
-.vs/slnx.sqlite
-
-.vs/VSWorkspaceState.json
-
-Projet/.vs/Projets/v16/
-
-Temp/Release/Exemple/CH3D.obj
-
-Temp/Release/Exemple/Dir3D.obj
-
-Temp/Release/Exemple/Exemple.exe
-
-Temp/*
+Temp/
