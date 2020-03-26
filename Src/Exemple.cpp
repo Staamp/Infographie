@@ -110,31 +110,37 @@ void mySolidCube(double c) {
 	c /= 2.0;
 	glBegin(GL_QUADS);
 	glNormal3f(0.0F, 0.0F, 1.0F);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(c, c, c); // 1 
 	glVertex3d(-c, c, c); // 2 
 	glVertex3d(-c, -c, c); // 3 
 	glVertex3d(c, -c, c); // 4 
 	glNormal3f(0.0F, 1.0F, 0.0F);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(c, c, c); // 1 
 	glVertex3d(c, c, -c); // 5 
 	glVertex3d(-c, c, -c); // 6 
 	glVertex3d(-c, c, c); // 2 
 	glNormal3f(1.0F, 0.0F, 0.0F);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(c, c, c); // 1 
 	glVertex3d(c, -c, c); // 4 
 	glVertex3d(c, -c, -c); // 7 
 	glVertex3d(c, c, -c); // 5 
 	glNormal3f(0.0F, -1.0F, 0.0F);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(c, -c, c); // 4 
 	glVertex3d(-c, -c, c); // 3 
 	glVertex3d(-c, -c, -c); // 8 
 	glVertex3d(c, -c, -c); // 7 
 	glNormal3f(-1.0F, 0.0F, 0.0F);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(-c, -c, c); // 3 
 	glVertex3d(-c, c, c); // 2 
 	glVertex3d(-c, c, -c); // 6 
 	glVertex3d(-c, -c, -c); // 8 
 	glNormal3f(0.0F, 0.0F, -1.0F);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(-c, c, -c); // 6 
 	glVertex3d(c, c, -c); // 5 
 	glVertex3d(c, -c, -c); // 7 
@@ -147,8 +153,6 @@ void startPlateforme() {
 	glPushMatrix();
 	glTranslatef(0.0F, -5.0F, 0.0F);
 	glScalef(30.0F, 0.5F, 100.0F);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glBindTexture(GL_TEXTURE_2D, textureID);
 	mySolidCube(1.0F);
 	glPopMatrix();
 }
