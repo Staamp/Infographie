@@ -1,3 +1,0 @@
-﻿  Exemple.cpp
-Exemple.obj : error LNK2001: symbole externe non résolu "unsigned char * __cdecl chargeImagePng(char *,int *,int *)" (?chargeImagePng@@YAPAEPADPAH1@Z)
-..\..\Temp\Release\Exemple\Exemple.exe : fatal error LNK1120: 1 externes non résolus
