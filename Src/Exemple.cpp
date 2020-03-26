@@ -320,11 +320,11 @@ static void init(void) {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	{ int rx;
 	int ry;
-	unsigned char* img = chargeImagePng("./Ressources/Img/glace.png", &rx, &ry);
+	/*unsigned char* img = chargeImagePng("./Ressources/Img/glace.png", &rx, &ry);
 	if (img) {
 		glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
 		free(img);
-	} }
+	} */}
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -348,25 +348,20 @@ static void scene(void) {
 /* de la fenetre de dessin                      */
 
 static void display(void) {
+	//printf("D\n");
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	const GLfloat light0_position[] = { 1.0,1.0,1.0,0.0 };
-	const GLfloat light1_position[] = { -1.0,1.0,1.0,0.0 };
-	const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };
-	glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-	glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
-	glPolygonMode(GL_FRONT_AND_BACK, (aff) ? GL_FILL : GL_LINE);
 	glPushMatrix();
 	glRotatef(rx, 1.0F, 0.0F, 0.0F);
 	glRotatef(ry, 0.0F, 1.0F, 0.0F);
 	glRotatef(rz, 0.0F, 0.0F, 1.0F);
+	glScalef(0.05F, 0.05F, 0.05F);
 	scene();
 	glPopMatrix();
 	glFlush();
 	glutSwapBuffers();
 	int error = glGetError();
 	if (error != GL_NO_ERROR)
-		printf("Erreur OpenGL: %d\n", error);
+		printf("Attention erreur %d\n", error);
 }
 
 /* Fonction executee lors d'un changement       */

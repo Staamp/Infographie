@@ -1,3 +1,10 @@
 ﻿  Exemple.cpp
-Exemple.obj : error LNK2001: symbole externe non résolu "unsigned char * __cdecl chargeImagePng(char *,int *,int *)" (?chargeImagePng@@YAPAEPADPAH1@Z)
-..\..\Temp\Release\Exemple\Exemple.exe : fatal error LNK1120: 1 externes non résolus
+C:\Users\impet\Desktop\Cours\IG\Projet\Infographie\Src\Exemple.cpp(321,8): warning C4101: 'rx' : variable locale non référencée
+C:\Users\impet\Desktop\Cours\IG\Projet\Infographie\Src\Exemple.cpp(322,6): warning C4101: 'ry' : variable locale non référencée
+  Génération de code en cours
+  2 of 18 functions (11.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Fin de la génération du code
+  Exemple.vcxproj -> C:\Users\impet\Desktop\Cours\IG\Projet\Infographie\Projet\Exemple\..\..\Temp\Release\Exemple\Exemple.exe
+          1 fichier(s) copié(s).
