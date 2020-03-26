@@ -18,13 +18,6 @@
 #define M_PI 3.14159
 #endif
 
-
-static float rx = 0.0F;
-static float ry = 0.0F;
-static float rz = 0.0F;
-static int nb = 100;
-static int nP = 0;
-
 static float bleu[4] = { 0.0F,0.0F,1.0F,1.0F };
 static float blanc[4] = { 1.0F,1.0F,1.0F,1.0F };
 static float brun[4] = { 0.59F,0.34F,0.09F,1.0F };
@@ -48,7 +41,7 @@ static int nb = 100;
 static int nP = 0;
 static int aff = 0;
 static unsigned int textureID = 0;
-static const float blanc[] = { 1.2F,1.2F,1.2F,1.0F };
+static const float blanc1[] = { 1.2F,1.2F,1.2F,1.0F };
 
 static int taille = 4;
 static int isLine = 0;		// Affichage fil de fer
@@ -170,7 +163,7 @@ void mySolidCube(double c) {
 
 void startPlateforme() {
 	glPushMatrix();
-	glTranslatef(0.0F, -5.0F, 0.0F);
+	glTranslatef(0.0F, -3.0F, 0.0F);
 	glScalef(30.0F, 0.5F, 100.0F);
 	mySolidCube(1.0F);
 	glPopMatrix();
@@ -345,7 +338,7 @@ static void myLuge() {
 
 static void init(void) {
 	const GLfloat mat_shininess[] = { 50.0 };
-	glMaterialfv(GL_FRONT, GL_SPECULAR, blanc);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, blanc1);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, blanc);
@@ -381,6 +374,7 @@ static void scene(void) {
 
 	glPushMatrix();
 	myLuge();
+	startPlateforme();
 	glPopMatrix();
 }
 
