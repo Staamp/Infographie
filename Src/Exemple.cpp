@@ -6,11 +6,15 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
+
 
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
+
+#include "./Pos3D.h"
 
 /* Variables globales                           */
 
@@ -18,16 +22,66 @@ static int wTx = 480;      // Resolution horizontale de la fenetre
 static int wTy = 480;      // Resolution verticale de la fenetre
 static int wPx = 50;       // Position horizontale de la fenetre
 static int wPy = 50;       // Position verticale de la fenetre
-
+static float rx = 0.0F;
+static float ry = 0.0F;
+static float rz = 0.0F;
 static int mx;
 static float r1 = 0.0F;
 static int mouseActive = 0;
+static int nb = 100;
+static int nP = 0;
+static int aff = 0;
+
+static int taille = 4;
 static int isLine = 0;		// Affichage fil de fer
 
 						   /* Fonction d'initialisation des parametres     */
 						   /* OpenGL ne changeant pas au cours de la vie   */
 						   /* du programme                                 */
 
+
+/* Calcul la position d'un point sur une courbe  */
+/* B-Spline controlee par quatre sommets         */
+/* g : le tableau des 4 sommets de controle      */
+/* t : la valeur de calcul du point              */
+/*     t a prendre dans l'intervalle [0.0,1.0]   */
+/* mb : la matrice de base                       */
+/* p : le point resultat                         */
+
+static void determinationPositionSurBSpline(Pos3D** g, double t, double mb[4][4], Pos3D* p) {
+	double vt[4] = { t * t * t,t * t,t,1.0 };
+	double vtmb[4] = { 0.0,0.0,0.0,0.0 };
+	for (int j = 0; j < 4; j++) {
+		for (int k = 0; k < 4; k++)
+			vtmb[j] += vt[k] * mb[k][j];
+	}
+	p->x = p->y = p->z = 0.0;
+	for (int j = 0; j < 4; j++) {
+		p->x += vtmb[j] * g[j]->x;
+		p->y += vtmb[j] * g[j]->y;
+		p->z += vtmb[j] * g[j]->z;
+	}
+}
+
+/* Calcul les points definissant une courbe      */
+/* B-Spline par morceaux definie par un ensemble */
+/* de sommets de controle                        */
+/* tPos : le tableau des sommets de controle     */
+/* n : le nombre de sommets de contrôle          */
+/* mb : la matrice de base                       */
+/* nb : le nombre de points a calculer           */
+/* tRes : le tableau de points resultat          */
+
+static void calculBSpline(Pos3D** tPos, int n, double mb[4][4], int nb, Pos3D** tRes) {
+	for (int i = 0; i < nb; i++) {
+		double pos = i / (nb - 1.0) * (n - 3);
+		int nb = (int)pos;
+		if (nb == n - 3)
+			nb = n - 4;
+		double t = pos - nb;
+		determinationPositionSurBSpline(&tPos[nb], t, mb, tRes[i]);
+	}
+}
 
 void mySolidCube(double c) {
 	c /= 2.0;
@@ -63,6 +117,13 @@ void mySolidCube(double c) {
 	glVertex3d(c, -c, -c); // 7 
 	glVertex3d(-c, -c, -c); // 8 
 	glEnd();
+}
+
+void startPlateforme() {
+	glPushMatrix();
+	glScalef(10.0F, 0.5F, 10.0F);
+	mySolidCube(1.0F);
+	glPopMatrix();
 }
 
 void brasRobot(float r1, float r2) { 
@@ -169,6 +230,7 @@ static void scene(void) {
 
 	glPushMatrix();
 	brasRobotCylindre(0.0, 10.0);
+	startPlateforme();
 	glPopMatrix();
 }
 
@@ -218,33 +280,19 @@ static void idle(void) {
 /* d'une touche alphanumerique du clavier       */
 
 static void keyboard(unsigned char key, int x, int y) {
-	printf("K  %4c %4d %4d\n", key, x, y);
 	switch (key) {
-	case 0x1B: // Echape
+	case 0x0D:
+		taille = (taille == 10) ? 4 : 10;
+		glutPostRedisplay();
+		break;
+	case 0x20:
+		aff = (aff + 1) % 6;
+		glutPostRedisplay();
+		break;
+	case 0x1B:
 		exit(0);
 		break;
-	case 0x0D: { // Entree
-			static int anim = 1;
-			anim = !anim;
-			glutIdleFunc((anim) ? idle : NULL);
-		}
-		break;
-	case 0x20: // Espace
-		if (!isLine) {
-			printf("Passe en mode fil de fer\n");
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			isLine = 1;
-			glutPostRedisplay();
-		}
-		else {
-			printf("Passe en mode plein\n");
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			isLine = 0;
-			glutPostRedisplay();
-		}
-		break;
 	}
-	
 }
 
 /* Fonction executee lors de l'appui            */
@@ -252,13 +300,62 @@ static void keyboard(unsigned char key, int x, int y) {
 /*   - touches de curseur                       */
 /*   - touches de fonction                      */
 
-static void special(int specialKey, int x, int y) {
-	printf("S  %4d %4d %4d\n", specialKey, x, y);
-	if (specialKey == GLUT_KEY_RIGHT) {
-		
-	}
-	if (specialKey == GLUT_KEY_LEFT) {
-
+static void special(int key, int x, int y) {
+	switch (key) {
+	case GLUT_KEY_UP:
+		rx++;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_DOWN:
+		rx--;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_LEFT:
+		ry++;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_RIGHT:
+		ry--;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_PAGE_UP:
+		switch (glutGetModifiers()) {
+		case GLUT_ACTIVE_ALT:
+			nb++;
+			glutPostRedisplay();
+			break;
+		case GLUT_ACTIVE_CTRL:
+			nP++;
+			if (nP == nb)
+				nP = nb - 1;
+			glutPostRedisplay();
+			break;
+		default:
+			rz++;
+			glutPostRedisplay();
+		}
+		break;
+	case GLUT_KEY_PAGE_DOWN:
+		switch (glutGetModifiers()) {
+		case GLUT_ACTIVE_ALT:
+			nb--;
+			if (nb == 1)
+				nb = 2;
+			if (nP == nb)
+				nP = nb - 1;
+			glutPostRedisplay();
+			break;
+		case GLUT_ACTIVE_CTRL:
+			nP--;
+			if (nP < 0)
+				nP = 0;
+			glutPostRedisplay();
+			break;
+		default:
+			rz--;
+			glutPostRedisplay();
+		}
+		break;
 	}
 }
 
@@ -315,11 +412,12 @@ int main(int argc, char **argv) {
 	init();
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
+	glutReshapeFunc(reshape);
+
 	glutMouseFunc(mouse);
 	glutMotionFunc(mouseMotion);
 	//glutPassiveMotionFunc(passiveMouseMotion);
 	glutReshapeFunc(reshape);
-	glutIdleFunc(idle);
 	//glutIdleFunc(NULL);
 	glutDisplayFunc(display);
 	glutMainLoop();
