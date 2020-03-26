@@ -42,25 +42,28 @@ static int isLine = 0;		// Affichage fil de fer
 						   /* du programme                                 */
 
 
-/* Fonction de chargement d'une texture         */
-/* a partir d'un fichier image au format png    */
-/* filename : le nom du fichier                 */
-/* textureID : le handle de la texture          */
+//////////////////////////////////////////////////
 
-static void chargementTexture(char* filename, unsigned int textureID) {
+/* Fonction d'initialisation des parametres     */
+/* OpenGL ne changeant pas au cours de la vie   */
+/* du programme                                 */
+/* Contient en particulier l'initialisation     */
+/* de trois textures 2D                         */
+
+static void chargeTexture(unsigned int textureID, char* filename) {
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	{ int rx;
 	int ry;
-	unsigned char* img = chargeImagePng("./Ressources/Img/glace.png", &rx, &ry);
+	unsigned char* img = chargeImagePng(filename, &rx, &ry);
 	if (img) {
 		glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
 		free(img);
 	} }
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
 /* Calcul la position d'un point sur une courbe  */
@@ -155,25 +158,6 @@ void startPlateforme() {
 	glScalef(30.0F, 0.5F, 100.0F);
 	mySolidCube(1.0F);
 	glPopMatrix();
-}
-
-void brasRobot(float r1, float r2) { 
-	glPushMatrix(); 
-	glRotatef(r1, 0.0F, 1.0F, 0.0F); 
-	glTranslatef(1.5F, 0.0F, 0.0F); 
-	glScalef(3.0F, 1.0F, 1.0F); 
-	glPushMatrix(); 
-	glScalef(3.0F, 1.0F, 1.0F); 
-	mySolidCube(1.0); 
-	glPopMatrix(); 
-	glTranslatef(1.5F, 0.0F, 0.0F); 
-	glRotatef(r2, 0.0F, 1.0F, 0.0F); 
-	glTranslatef(1.5F, 0.0F, 0.0F); 
-	glPushMatrix(); 
-	glScalef(3.0F, 0.8F, 0.8F); 
-	mySolidCube(1.0); 
-	glPopMatrix(); 
-	glPopMatrix(); 
 }
 
 static void mySolidCylindre(double hauteur, double rayon, int ns) {
