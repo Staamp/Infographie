@@ -12,6 +12,16 @@
 #include <GL/glu.h>
 #include <cmath>
 
+
+
+
+static float rx = 0.0F;
+static float ry = 0.0F;
+static float rz = 0.0F;
+static int nb = 100;
+static int nP = 0;
+
+
 /* Variables globales                           */
 
 static int wTx = 480;      // Resolution horizontale de la fenetre
@@ -114,30 +124,99 @@ static void mySolidCylindre(double hauteur, double rayon, int ns) {
 		glDisable(GL_NORMALIZE);
 }
 
-void brasRobotCylindre(float r1, float r2) {
-	glPushMatrix();
-	glRotatef(r1, 0.0F, 1.0F, 0.0F);
-	glTranslatef(1.5F, 0.0F, 0.0F);
-	glPushMatrix();
-	glRotatef(90, 0.0, 0.0, 1.0);
-	mySolidCylindre(3.0, 1.0, 100);
-	glPopMatrix();
-	glTranslatef(1.5F, 0.0F, 0.0F);
-	glRotatef(r2, 0.0F, 1.0F, 0.0F);
-	glTranslatef(1.5F, 0.0F, 0.0F);
-	glPushMatrix();
-	glRotatef(90, 0.0, 0.0, 1.0);
-	mySolidCylindre(3.0, 0.8, 100);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslated(2.0, 0.0, 0.0);
-	glScaled(0.5, 1.0, 1.0);
-	mySolidCube(2.0);
-	glPopMatrix();
+/* Fonction qui modélise un rectangle 
+ * h : hauteur
+ * l : largeur
+ * lo : longueur
+ */
+static void myRectangle(double h, double l, double lo) {
+	/*double h = 0.5F; // Hauteur
+	double l = 3.0F; // Largeur
+	double lo = 7.0F; // Longueur*/
+	glBegin(GL_QUADS);
+		glNormal3f(0.0F, 0.0F, 1.0F);
+		glVertex3d(l, h, lo); // 1 
+		glVertex3d(-l, h, lo); // 2 
+		glVertex3d(-l, -h, lo); // 3 
+		glVertex3d(l, -h, lo); //4 
 
+		glNormal3f(0.0F, h, 0.0F);
+		glVertex3d(l, h, lo); // 1 
+		glVertex3d(l, h, -lo); // 5 
+		glVertex3d(-l, h, -lo); // 6 
+		glVertex3d(-l, h, lo); // 2 
 
-	glPopMatrix();
+		glNormal3f(1.0F, 0.0F, 0.0F);
+		glVertex3d(l, h, lo); // 1 
+		glVertex3d(l, -h, lo); // 4 
+		glVertex3d(l, -h, -lo); // 7 
+		glVertex3d(l, h, -lo); // 5 
+
+		glNormal3f(0.0F, -1.0, 0.0F);
+		glVertex3d(l, -h, lo);  // 4 
+		glVertex3d(l, -h, lo); // 3 
+		glVertex3d(l, -h, -lo); // 8 
+		glVertex3d(l, -h, -lo); // 7 
+
+		glNormal3f(-1.0F, 0.0F, 0.0F);
+		glVertex3d(-l, -h, lo); // 3 
+		glVertex3d(-l, h, lo); // 2 
+		glVertex3d(-l, h, -lo); // 6 
+		glVertex3d(-l, -h, -lo); // 8 
+
+		glNormal3f(0.0F, 0.0F, -1.0F);
+		glVertex3d(-l, h, -lo); // 6 
+		glVertex3d(l, h, -lo); // 5 
+		glVertex3d(l, -h, -lo); // 7 
+		glVertex3d(-l, -h, -lo); // 8 
+	glEnd();
+
 }
+
+static void myPiedDeLuge() {
+	double h = 0.5F; // Hauteur
+	double l = 0.5F; // Largeur
+	double lo = 8.0F; // Longueur
+	glBegin(GL_QUADS);
+		glNormal3f(0.0F, 0.0F, 1.0F);
+		glVertex3d(l, h, lo); // 1 
+		glVertex3d(-l, h, lo); // 2 
+		glVertex3d(-l, -h, lo); // 3 
+		glVertex3d(l, -h, lo); //4 
+
+		glNormal3f(0.0F, h, 0.0F);
+		glVertex3d(l, h, lo); // 1 
+		glVertex3d(l, h, -lo); // 5 
+		glVertex3d(-l, h, -lo); // 6 
+		glVertex3d(-l, h, lo); // 2 
+
+		glNormal3f(1.0F, 0.0F, 0.0F);
+		glVertex3d(l, h, lo); // 1 
+		glVertex3d(l, -h, lo); // 4 
+		glVertex3d(l, -h, -lo); // 7 
+		glVertex3d(l, h, -lo); // 5 
+
+		glNormal3f(0.0F, -1.0, 0.0F);
+		glVertex3d(l, -h, lo);  // 4 
+		glVertex3d(l, -h, lo); // 3 
+		glVertex3d(l, -h, -lo); // 8 
+		glVertex3d(l, -h, -lo); // 7 
+
+		glNormal3f(-1.0F, 0.0F, 0.0F);
+		glVertex3d(-l, -h, lo); // 3 
+		glVertex3d(-l, h, lo); // 2 
+		glVertex3d(-l, h, -lo); // 6 
+		glVertex3d(-l, -h, -lo); // 8 
+
+		glNormal3f(0.0F, 0.0F, -1.0F);
+		glVertex3d(-l, h, -lo); // 6 
+		glVertex3d(l, h, -lo); // 5 
+		glVertex3d(l, -h, -lo); // 7 
+		glVertex3d(-l, -h, -lo); // 8 
+	glEnd();
+}
+
+
 
 
 
@@ -152,23 +231,13 @@ static void init(void) {
 
 /* Scene dessinee                               */
 static void scene(void) {
-	//glPushMatrix();
-	//glRotatef(r1, 1.0F, 0.0F, 0.0F);
-	//mySolidCube(1.0);
-	//glPopMatrix();
-
-	/*glPushMatrix(); 
-	for (int i = 0; i < 3; i++) { 
-		glPushMatrix(); 
-		glRotatef(i*120.0F, 0.0F, 1.0F, 0.0F); 
-		glTranslatef(1.5F, 0.0F, 0.0F); 
-		mySolidCube(2.0); 
-		glPopMatrix(); 
-	} 
-	glPopMatrix();*/
+	
 
 	glPushMatrix();
-	brasRobotCylindre(0.0, 10.0);
+	//Planche du dessus de la luge
+	myRectangle(0.5F, 3.0F, 7.0F);
+	//Pied de la luge
+	//myRectangle(0.5F, 3.0F, 7.0F);
 	glPopMatrix();
 }
 
@@ -179,7 +248,9 @@ static void display(void) {
 	//printf("D\n");
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glPushMatrix();
-	glRotated(45.0, 1.0, 1.0, 0.0);
+	glRotatef(rx, 1.0F, 0.0F, 0.0F);
+	glRotatef(ry, 0.0F, 1.0F, 0.0F);
+	glRotatef(rz, 0.0F, 0.0F, 1.0F);
 	glScalef(0.05F,0.05F,0.05F);
 	scene();
 	glPopMatrix();
@@ -252,13 +323,63 @@ static void keyboard(unsigned char key, int x, int y) {
 /*   - touches de curseur                       */
 /*   - touches de fonction                      */
 
-static void special(int specialKey, int x, int y) {
-	printf("S  %4d %4d %4d\n", specialKey, x, y);
-	if (specialKey == GLUT_KEY_RIGHT) {
-		
-	}
-	if (specialKey == GLUT_KEY_LEFT) {
-
+static void special(int key, int x, int y) {
+	printf("M  %4d %4d %4d\n", key, x, y);
+	switch (key) {
+	case GLUT_KEY_UP:
+		rx++;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_DOWN:
+		rx--;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_LEFT:
+		ry++;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_RIGHT:
+		ry--;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_PAGE_UP:
+		switch (glutGetModifiers()) {
+		case GLUT_ACTIVE_ALT:
+			nb++;
+			glutPostRedisplay();
+			break;
+		case GLUT_ACTIVE_CTRL:
+			nP++;
+			if (nP == nb)
+				nP = nb - 1;
+			glutPostRedisplay();
+			break;
+		default:
+			rz++;
+			glutPostRedisplay();
+		}
+		break;
+	case GLUT_KEY_PAGE_DOWN:
+		switch (glutGetModifiers()) {
+		case GLUT_ACTIVE_ALT:
+			nb--;
+			if (nb == 1)
+				nb = 2;
+			if (nP == nb)
+				nP = nb - 1;
+			glutPostRedisplay();
+			break;
+		case GLUT_ACTIVE_CTRL:
+			nP--;
+			if (nP < 0)
+				nP = 0;
+			glutPostRedisplay();
+			break;
+		default:
+			rz--;
+			glutPostRedisplay();
+		}
+		break;
 	}
 }
 
