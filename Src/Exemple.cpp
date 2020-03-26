@@ -13,8 +13,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
-
-#include "./Pos3D.h"
+#include "PNG/ChargePngFile.h"
+#include "Pos3D.h"
 
 /* Variables globales                           */
 
@@ -31,6 +31,8 @@ static int mouseActive = 0;
 static int nb = 100;
 static int nP = 0;
 static int aff = 0;
+static unsigned int textureID = 0;
+static const float blanc[] = { 1.2F,1.2F,1.2F,1.0F };
 
 static int taille = 4;
 static int isLine = 0;		// Affichage fil de fer
@@ -39,6 +41,27 @@ static int isLine = 0;		// Affichage fil de fer
 						   /* OpenGL ne changeant pas au cours de la vie   */
 						   /* du programme                                 */
 
+
+/* Fonction de chargement d'une texture         */
+/* a partir d'un fichier image au format png    */
+/* filename : le nom du fichier                 */
+/* textureID : le handle de la texture          */
+
+static void chargementTexture(char* filename, unsigned int textureID) {
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	{ int rx;
+	int ry;
+	unsigned char* img = chargeImagePng("./Ressources/Img/glace.png", &rx, &ry);
+	if (img) {
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+		free(img);
+	} }
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+}
 
 /* Calcul la position d'un point sur une courbe  */
 /* B-Spline controlee par quatre sommets         */
@@ -119,9 +142,13 @@ void mySolidCube(double c) {
 	glEnd();
 }
 
+
 void startPlateforme() {
 	glPushMatrix();
-	glScalef(10.0F, 0.5F, 10.0F);
+	glTranslatef(0.0F, -5.0F, 0.0F);
+	glScalef(30.0F, 0.5F, 100.0F);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 	mySolidCube(1.0F);
 	glPopMatrix();
 }
@@ -273,11 +300,35 @@ static void myPiedDeLuge() {
 
 
 static void init(void) {
+	const GLfloat mat_shininess[] = { 50.0 };
+	glMaterialfv(GL_FRONT, GL_SPECULAR, blanc);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, blanc);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, blanc);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glEnable(GL_TEXTURE_2D);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	{ int rx;
+	int ry;
+	unsigned char* img = chargeImagePng("./Ressources/Img/glace.png", &rx, &ry);
+	if (img) {
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+		free(img);
+	} }
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
 
 /* Scene dessinee                               */
@@ -289,7 +340,6 @@ static void scene(void) {
 	myRectangle(0.5F, 3.0F, 7.0F);
 	//Pied de la luge
 	//myRectangle(0.5F, 3.0F, 7.0F);
-	brasRobotCylindre(0.0, 10.0);
 	startPlateforme();
 	glPopMatrix();
 }
@@ -298,20 +348,25 @@ static void scene(void) {
 /* de la fenetre de dessin                      */
 
 static void display(void) {
-	//printf("D\n");
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	const GLfloat light0_position[] = { 1.0,1.0,1.0,0.0 };
+	const GLfloat light1_position[] = { -1.0,1.0,1.0,0.0 };
+	const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };
+	glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+	glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
+	glPolygonMode(GL_FRONT_AND_BACK, (aff) ? GL_FILL : GL_LINE);
 	glPushMatrix();
 	glRotatef(rx, 1.0F, 0.0F, 0.0F);
 	glRotatef(ry, 0.0F, 1.0F, 0.0F);
 	glRotatef(rz, 0.0F, 0.0F, 1.0F);
-	glScalef(0.05F,0.05F,0.05F);
 	scene();
 	glPopMatrix();
 	glFlush();
 	glutSwapBuffers();
 	int error = glGetError();
 	if (error != GL_NO_ERROR)
-		printf("Attention erreur %d\n", error);
+		printf("Erreur OpenGL: %d\n", error);
 }
 
 /* Fonction executee lors d'un changement       */
