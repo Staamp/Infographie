@@ -12,7 +12,9 @@
 #include <GL/glu.h>
 #include <cmath>
 
-
+#ifndef M_PI
+#define M_PI 3.14159
+#endif
 
 
 static float rx = 0.0F;
@@ -20,6 +22,10 @@ static float ry = 0.0F;
 static float rz = 0.0F;
 static int nb = 100;
 static int nP = 0;
+
+static float bleu[4] = { 0.0F,0.0F,1.0F,1.0F };
+static float blanc[4] = { 1.0F,1.0F,1.0F,1.0F };
+static float brun[4] = { 0.59F,0.34F,0.09F,1.0F };
 
 
 /* Variables globales                           */
@@ -130,9 +136,6 @@ static void mySolidCylindre(double hauteur, double rayon, int ns) {
  * lo : longueur
  */
 static void myRectangle(double h, double l, double lo) {
-	/*double h = 0.5F; // Hauteur
-	double l = 3.0F; // Largeur
-	double lo = 7.0F; // Longueur*/
 	glBegin(GL_QUADS);
 		glNormal3f(0.0F, 0.0F, 1.0F);
 		glVertex3d(l, h, lo); // 1 
@@ -173,47 +176,90 @@ static void myRectangle(double h, double l, double lo) {
 
 }
 
-static void myPiedDeLuge() {
-	double h = 0.5F; // Hauteur
-	double l = 0.5F; // Largeur
-	double lo = 8.0F; // Longueur
-	glBegin(GL_QUADS);
-		glNormal3f(0.0F, 0.0F, 1.0F);
-		glVertex3d(l, h, lo); // 1 
-		glVertex3d(-l, h, lo); // 2 
-		glVertex3d(-l, -h, lo); // 3 
-		glVertex3d(l, -h, lo); //4 
-
-		glNormal3f(0.0F, h, 0.0F);
-		glVertex3d(l, h, lo); // 1 
-		glVertex3d(l, h, -lo); // 5 
-		glVertex3d(-l, h, -lo); // 6 
-		glVertex3d(-l, h, lo); // 2 
-
-		glNormal3f(1.0F, 0.0F, 0.0F);
-		glVertex3d(l, h, lo); // 1 
-		glVertex3d(l, -h, lo); // 4 
-		glVertex3d(l, -h, -lo); // 7 
-		glVertex3d(l, h, -lo); // 5 
-
-		glNormal3f(0.0F, -1.0, 0.0F);
-		glVertex3d(l, -h, lo);  // 4 
-		glVertex3d(l, -h, lo); // 3 
-		glVertex3d(l, -h, -lo); // 8 
-		glVertex3d(l, -h, -lo); // 7 
-
-		glNormal3f(-1.0F, 0.0F, 0.0F);
-		glVertex3d(-l, -h, lo); // 3 
-		glVertex3d(-l, h, lo); // 2 
-		glVertex3d(-l, h, -lo); // 6 
-		glVertex3d(-l, -h, -lo); // 8 
-
-		glNormal3f(0.0F, 0.0F, -1.0F);
-		glVertex3d(-l, h, -lo); // 6 
-		glVertex3d(l, h, -lo); // 5 
-		glVertex3d(l, -h, -lo); // 7 
-		glVertex3d(-l, -h, -lo); // 8 
+static void myCylindre(float r, float h, int n) {
+	float* cs = (float*)calloc(n, sizeof(float));
+	float* sn = (float*)calloc(n, sizeof(float));
+	int i;
+	for (i = 0; i < n; i++) {
+		float a = (2 * M_PI * i) / n;
+		sn[i] = sin(a);
+		cs[i] = cos(a);
+	}
+	glPushMatrix();
+	glBegin(GL_QUAD_STRIP);
+	for (i = 0; i <= n; i++) {
+		float x = r * cs[i % n];
+		float z = -r * sn[i % n];
+		glNormal3f(cs[i % n], 0.0F, -sn[i % n]);
+		glVertex3f(x, h / 2, z);
+		glVertex3f(x, -h / 2, z);
+	}
 	glEnd();
+	glBegin(GL_POLYGON);
+	glNormal3f(0.0F, 1.0F, 0.0F);
+	for (i = 0; i < n; i++) {
+		float si = -sn[i];
+		float ci = cs[i];
+		glVertex3f(r * ci, h / 2, r * si);
+	}
+	glEnd();
+	glBegin(GL_POLYGON);
+	glNormal3f(0.0F, -1.0F, 0.0F);
+	for (i = 0; i < n; i++) {
+		float si = sn[i];
+		float ci = cs[i];
+		glVertex3f(r * ci, -h / 2, r * si);
+	}
+	glEnd();
+	free(cs);
+	free(sn);
+	glPopMatrix();
+}
+
+static void linkLuge() {
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
+	myRectangle(1.0F, 0.5f, 0.5F);
+	glTranslatef(3.0F, 0.5F, 0.0F);
+	myRectangle(0.5F, 3.0f, 0.5F);
+	glTranslatef(3.0F, -0.5F, 0.0F);
+	myRectangle(1.0F, 0.5f, 0.5F);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
+}
+
+static void myLuge() {
+
+
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, brun);
+
+	//Planche de la luge
+	glPushMatrix();
+	myRectangle(0.5F, 3.0F, 7.0F);
+	glTranslatef(0.0F,0.0F,7.0F);
+	myCylindre(3.0F, 1.0F, 1000);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-2.0F, -2.0F, 0.0F);
+	myRectangle(0.5F, 0.5F, 8.0F);
+	glTranslatef(0.0F, 0.3F, 8.0F);
+	glRotatef(90.0, 0.0F, 0.0F, 1.0F);
+	myCylindre(0.8F, 1.0F, 1000);
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(2.0F, -2.0F, 0.0F);
+	myRectangle(0.5F, 0.5F, 8.0F);
+	glTranslatef(0.0F, 0.3F, 8.0F);
+	glRotatef(90.0, 0.0F, 0.0F, 1.0F);
+	myCylindre(0.8F, 1.0F, 1000);
+	glPopMatrix();
+
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
+
+	linkLuge();
+
+
+
+
 }
 
 
@@ -234,10 +280,11 @@ static void scene(void) {
 	
 
 	glPushMatrix();
-	//Planche du dessus de la luge
-	myRectangle(0.5F, 3.0F, 7.0F);
-	//Pied de la luge
-	//myRectangle(0.5F, 3.0F, 7.0F);
+	myLuge();
+	
+	
+
+
 	glPopMatrix();
 }
 
