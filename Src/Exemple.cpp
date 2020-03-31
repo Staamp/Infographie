@@ -1,54 +1,60 @@
-/* Fonctionnement de GLUt                       */
+/* Projet Infographie Bobsleigh				    */
 /*                                              */
-/* Auteur: Nicolas JANEY                        */
-/* nicolas.janey@univ-fcomte.fr                 */
-/* Janvier 2019                                 */
+/* Auteurs: Nicolas Courvoisier					*/
+/*		   Tanguy Plaza							*/
+/*		   Adrien Signoret						*/	
+/* Master Informatique						    */
+/* Semestre 8 2019-2020                         */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
 
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
 
+#include "PNG/ChargePngFile.h"
+#include "Pos3D.h"
+
 #ifndef M_PI
 #define M_PI 3.14159
 #endif
 
+
+/* Variables globales                           */
+
+/* Definition des couleurs						*/
 static float bleu[4] = { 0.0F,0.0F,1.0F,1.0F };
 static float blanc[4] = { 1.0F,1.0F,1.0F,1.0F };
 static float brun[4] = { 0.59F,0.34F,0.09F,1.0F };
+static float noir[4] = { 0.0F,0.0F,0.0F,1.0F };
+static float gris[4] = { 0.65F,0.65F,0.65F,1.0F };
+static const float blanc1[] = { 1.2F,1.2F,1.2F,1.0F };
 
-#include "PNG/ChargePngFile.h"
-#include "Pos3D.h"
-
-/* Variables globales                           */
 
 static int wTx = 480;      // Resolution horizontale de la fenetre
 static int wTy = 480;      // Resolution verticale de la fenetre
 static int wPx = 50;       // Position horizontale de la fenetre
 static int wPy = 50;       // Position verticale de la fenetre
-static float rx = 0.0F;
-static float ry = 0.0F;
-static float rz = 0.0F;
+
+static float rx = 0.0F;	   // Rotation en x
+static float ry = 0.0F;	   // Rotation en y
+static float rz = 0.0F;	   // Rotation en z
+
 static int mx;
+
 static float r1 = 0.0F;
 static int mouseActive = 0;
 static int nb = 100;
 static int nP = 0;
 static int aff = 0;
 static unsigned int textureID = 0;
-static const float blanc1[] = { 1.2F,1.2F,1.2F,1.0F };
 
 static int taille = 4;
 static int isLine = 0;		// Affichage fil de fer
 
-						   /* Fonction d'initialisation des parametres     */
-						   /* OpenGL ne changeant pas au cours de la vie   */
-						   /* du programme                                 */
 
 
 //////////////////////////////////////////////////
@@ -118,6 +124,8 @@ static void calculBSpline(Pos3D** tPos, int n, double mb[4][4], int nb, Pos3D** 
 	}
 }
 
+/* Fonction qui realise cube cote c */
+/* c : taille d'un cote				*/
 void mySolidCube(double c) {
 	c /= 2.0;
 	glBegin(GL_QUADS);
@@ -160,7 +168,7 @@ void mySolidCube(double c) {
 	glEnd();
 }
 
-
+/* Platforme de lancement du boblseigh */
 void startPlateforme() {
 	glPushMatrix();
 	glTranslatef(0.0F, -3.0F, 0.0F);
@@ -169,6 +177,10 @@ void startPlateforme() {
 	glPopMatrix();
 }
 
+/* Fonction qui genere un cylindre	*/
+/* hauteur : la hauteur du cylindre */
+/* rayon : le rayon du cylindre     */
+/* ns : le nombre de facettes	    */
 static void mySolidCylindre(double hauteur, double rayon, int ns) {
 	/* Protection contre la modification de la normale */
 	/* et du flag normalisation                        */
@@ -199,10 +211,10 @@ static void mySolidCylindre(double hauteur, double rayon, int ns) {
 		glDisable(GL_NORMALIZE);
 }
 
-/* Fonction qui mod�lise un rectangle 
- * h : hauteur
- * l : largeur
- * lo : longueur
+/* Fonction qui modelise un rectangle 
+ * h : hauteur du rectangle
+ * l : largeur du rectangle
+ * lo : longueur du rectangle
  */
 static void myRectangle(double h, double l, double lo) {
 	glBegin(GL_QUADS);
@@ -245,6 +257,10 @@ static void myRectangle(double h, double l, double lo) {
 
 }
 
+/* Fonction qui genere un cylindre plein	*/
+/* h : la hauteur du cylindre		    */
+/* r : le rayon du cylindre			    */
+/* n : le nombre de facettes				*/
 static void myCylindre(float r, float h, int n) {
 	float* cs = (float*)calloc(n, sizeof(float));
 	float* sn = (float*)calloc(n, sizeof(float));
@@ -285,22 +301,21 @@ static void myCylindre(float r, float h, int n) {
 	glPopMatrix();
 }
 
+/* Fonction qui fait les essieux de la luge */
 static void linkLuge() {
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, noir);
 	myRectangle(1.0F, 0.5f, 0.5F);
-	glTranslatef(3.0F, 0.5F, 0.0F);
-	myRectangle(0.5F, 3.0f, 0.5F);
-	glTranslatef(3.0F, -0.5F, 0.0F);
+	glTranslatef(2.0F, 0.3F, 0.0F);
+	myRectangle(0.5F, 2.0f, 0.5F);
+	glTranslatef(2.0F, -0.5F, 0.0F);
 	myRectangle(1.0F, 0.5f, 0.5F);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
 }
 
+/* Fonction qui genere la luge*/
 static void myLuge() {
-
-
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, brun);
 
-	//Planche de la luge
 	glPushMatrix();
 	myRectangle(0.5F, 3.0F, 7.0F);
 	glTranslatef(0.0F,0.0F,7.0F);
@@ -324,15 +339,24 @@ static void myLuge() {
 
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
 
+	glPushMatrix();
+	glTranslatef(-2.0F, -0.6F, 6.0F);
 	linkLuge();
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(-2.0F, -0.6F, -6.0F);
+	linkLuge();
+	glPopMatrix();
+	glPopMatrix();
 
-
-
-
+	glPushMatrix();
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, noir);
+	glTranslatef(0.0F, -1.7F, 8.0F);
+	glRotatef(90.0F,0.0F,0.0F,1.0F);
+	mySolidCylindre(3.0F, 0.20F, 100);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
+	glPopMatrix();
 }
-
-
-
 
 
 
@@ -370,8 +394,6 @@ static void init(void) {
 
 /* Scene dessinee                               */
 static void scene(void) {
-	
-
 	glPushMatrix();
 	myLuge();
 	startPlateforme();
@@ -427,16 +449,30 @@ static void idle(void) {
 
 static void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
-	case 0x0D:
+	case 0x0D:	//enter
 		taille = (taille == 10) ? 4 : 10;
 		glutPostRedisplay();
 		break;
-	case 0x20:
+	case 0x20:	//space
 		aff = (aff + 1) % 6;
 		glutPostRedisplay();
 		break;
-	case 0x1B:
+	case 0x1B:	//echape	
 		exit(0);
+		break;
+	case 0x66:	//f minuscule
+		if (!isLine) {
+			printf("Passe en mode fil de fer\n");
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			isLine = 1;
+			glutPostRedisplay();
+		}
+		else {
+			printf("Passe en mode plein\n");
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			isLine = 0;
+			glutPostRedisplay();
+		}
 		break;
 	}
 }
