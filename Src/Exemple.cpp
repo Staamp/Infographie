@@ -434,7 +434,7 @@ static void display(void) {
 	switch (version) {
 	case 0:
 		glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-		gluLookAt(px, py, pz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+		gluLookAt(px, py, pz, px, py, pz-1, 0.0, 1.0, 0.0);
 		break;
 	case 1:
 		gluLookAt(px, py, pz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
