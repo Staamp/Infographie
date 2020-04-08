@@ -184,6 +184,15 @@ void startPlateforme() {
 	glPopMatrix();
 }
 
+/* Platforme de lancement du boblseigh */
+void stopPlateforme() {
+	glPushMatrix();
+	glTranslatef(500.0F, -300.0F, 0.0F);
+	glScalef(30.0F, 0.5F, 100.0F);
+	mySolidCube(1.0F);
+	glPopMatrix();
+}
+
 /* Fonction qui genere un cylindre	*/
 /* hauteur : la hauteur du cylindre */
 /* rayon : le rayon du cylindre     */
@@ -404,6 +413,7 @@ static void scene(void) {
 	glPushMatrix();
 	myLuge();
 	startPlateforme();
+	stopPlateforme();
 	glPopMatrix();
 }
 
