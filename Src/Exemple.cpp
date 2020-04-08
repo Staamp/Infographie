@@ -2,7 +2,7 @@
 /*                                              */
 /* Auteurs: Nicolas Courvoisier					*/
 /*		   Tanguy Plaza							*/
-/*		   Adrien Signoret						*/	
+/*		   Adrien Signoret						*/
 /* Master Informatique						    */
 /* Semestre 8 2019-2020                         */
 
@@ -42,6 +42,13 @@ static int wPy = 50;       // Position verticale de la fenetre
 static float rx = 0.0F;	   // Rotation en x
 static float ry = 0.0F;	   // Rotation en y
 static float rz = 0.0F;	   // Rotation en z
+
+static double px = 0.0;
+static double py = 0.0;
+static double pz = 10.0;
+static int version = 0;
+
+
 
 static int mx;
 
@@ -194,12 +201,12 @@ static void mySolidCylindre(double hauteur, double rayon, int ns) {
 	hauteur /= 2.0F;
 	glBegin(GL_QUAD_STRIP);
 	for (int i = 0; i <= ns; i++) {
-		float a = (2 * 3.14*i) / ns;
+		float a = (2 * 3.14 * i) / ns;
 		float cs = cos(a);
 		float sn = -sin(a);
 		glNormal3f(cs, 0.0F, sn);
-		float x = rayon*cs;
-		float z = rayon*sn;
+		float x = rayon * cs;
+		float z = rayon * sn;
 		glVertex3f(x, hauteur, z);
 		glVertex3f(x, -hauteur, z);
 	}
@@ -211,48 +218,48 @@ static void mySolidCylindre(double hauteur, double rayon, int ns) {
 		glDisable(GL_NORMALIZE);
 }
 
-/* Fonction qui modelise un rectangle 
+/* Fonction qui modelise un rectangle
  * h : hauteur du rectangle
  * l : largeur du rectangle
  * lo : longueur du rectangle
  */
 static void myRectangle(double h, double l, double lo) {
 	glBegin(GL_QUADS);
-		glNormal3f(0.0F, 0.0F, 1.0F);
-		glVertex3d(l, h, lo); // 1 
-		glVertex3d(-l, h, lo); // 2 
-		glVertex3d(-l, -h, lo); // 3 
-		glVertex3d(l, -h, lo); //4 
+	glNormal3f(0.0F, 0.0F, 1.0F);
+	glVertex3d(l, h, lo); // 1 
+	glVertex3d(-l, h, lo); // 2 
+	glVertex3d(-l, -h, lo); // 3 
+	glVertex3d(l, -h, lo); //4 
 
-		glNormal3f(0.0F, h, 0.0F);
-		glVertex3d(l, h, lo); // 1 
-		glVertex3d(l, h, -lo); // 5 
-		glVertex3d(-l, h, -lo); // 6 
-		glVertex3d(-l, h, lo); // 2 
+	glNormal3f(0.0F, h, 0.0F);
+	glVertex3d(l, h, lo); // 1 
+	glVertex3d(l, h, -lo); // 5 
+	glVertex3d(-l, h, -lo); // 6 
+	glVertex3d(-l, h, lo); // 2 
 
-		glNormal3f(1.0F, 0.0F, 0.0F);
-		glVertex3d(l, h, lo); // 1 
-		glVertex3d(l, -h, lo); // 4 
-		glVertex3d(l, -h, -lo); // 7 
-		glVertex3d(l, h, -lo); // 5 
+	glNormal3f(1.0F, 0.0F, 0.0F);
+	glVertex3d(l, h, lo); // 1 
+	glVertex3d(l, -h, lo); // 4 
+	glVertex3d(l, -h, -lo); // 7 
+	glVertex3d(l, h, -lo); // 5 
 
-		glNormal3f(0.0F, -1.0, 0.0F);
-		glVertex3d(l, -h, lo);  // 4 
-		glVertex3d(l, -h, lo); // 3 
-		glVertex3d(l, -h, -lo); // 8 
-		glVertex3d(l, -h, -lo); // 7 
+	glNormal3f(0.0F, -1.0, 0.0F);
+	glVertex3d(l, -h, lo);  // 4 
+	glVertex3d(l, -h, lo); // 3 
+	glVertex3d(l, -h, -lo); // 8 
+	glVertex3d(l, -h, -lo); // 7 
 
-		glNormal3f(-1.0F, 0.0F, 0.0F);
-		glVertex3d(-l, -h, lo); // 3 
-		glVertex3d(-l, h, lo); // 2 
-		glVertex3d(-l, h, -lo); // 6 
-		glVertex3d(-l, -h, -lo); // 8 
+	glNormal3f(-1.0F, 0.0F, 0.0F);
+	glVertex3d(-l, -h, lo); // 3 
+	glVertex3d(-l, h, lo); // 2 
+	glVertex3d(-l, h, -lo); // 6 
+	glVertex3d(-l, -h, -lo); // 8 
 
-		glNormal3f(0.0F, 0.0F, -1.0F);
-		glVertex3d(-l, h, -lo); // 6 
-		glVertex3d(l, h, -lo); // 5 
-		glVertex3d(l, -h, -lo); // 7 
-		glVertex3d(-l, -h, -lo); // 8 
+	glNormal3f(0.0F, 0.0F, -1.0F);
+	glVertex3d(-l, h, -lo); // 6 
+	glVertex3d(l, h, -lo); // 5 
+	glVertex3d(l, -h, -lo); // 7 
+	glVertex3d(-l, -h, -lo); // 8 
 	glEnd();
 
 }
@@ -318,7 +325,7 @@ static void myLuge() {
 
 	glPushMatrix();
 	myRectangle(0.5F, 3.0F, 7.0F);
-	glTranslatef(0.0F,0.0F,7.0F);
+	glTranslatef(0.0F, 0.0F, 7.0F);
 	myCylindre(3.0F, 1.0F, 1000);
 	glPopMatrix();
 
@@ -352,7 +359,7 @@ static void myLuge() {
 	glPushMatrix();
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, noir);
 	glTranslatef(0.0F, -1.7F, 8.0F);
-	glRotatef(90.0F,0.0F,0.0F,1.0F);
+	glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
 	mySolidCylindre(3.0F, 0.20F, 100);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
 	glPopMatrix();
@@ -405,19 +412,32 @@ static void scene(void) {
 
 static void display(void) {
 	//printf("D\n");
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	const GLfloat light0_position[] = { 0.0,0.0,10.0,1.0 };
 	glPushMatrix();
+
 	glRotatef(rx, 1.0F, 0.0F, 0.0F);
 	glRotatef(ry, 0.0F, 1.0F, 0.0F);
 	glRotatef(rz, 0.0F, 0.0F, 1.0F);
-	glScalef(0.05F, 0.05F, 0.05F);
+
+	switch (version) {
+	case 0:
+		glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+		gluLookAt(px, py, pz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+		break;
+	case 1:
+		gluLookAt(px, py, pz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+		glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+		break;
+	}
 	scene();
 	glPopMatrix();
 	glFlush();
 	glutSwapBuffers();
 	int error = glGetError();
 	if (error != GL_NO_ERROR)
-		printf("Attention erreur %d\n", error);
+		printf("Erreur OpenGL: %d\n", error);
 }
 
 /* Fonction executee lors d'un changement       */
@@ -427,12 +447,18 @@ static void reshape(int wx, int wy) {
 	printf("R\n");
 	wTx = wx;
 	wTy = wy;
+
 	glViewport(0, 0, wx, wy);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+	double ratio = (double)wx / wy;
+	if (ratio >= 1.0)
+		gluPerspective(80.0, ratio, 1.0, 20.0);
+	else
+		gluPerspective(80.0 / ratio, ratio, 1.0, 20.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
 }
 
 /* Fonction executee lorsqu'aucun evenement     */
@@ -474,8 +500,41 @@ static void keyboard(unsigned char key, int x, int y) {
 			glutPostRedisplay();
 		}
 		break;
+	
+	case 0x7A: //z
+		py += 0.1;
+		glutPostRedisplay();
+		break;
+	case 0x73: //s
+		py -= 0.1;
+		glutPostRedisplay();
+		break;
+	case 0x71: //q
+		px -= 0.1;
+		glutPostRedisplay();
+		break;
+	case 0x64://d
+		px += 0.1;
+		glutPostRedisplay();
+		break;
+	case 0x61://a
+		pz -= 0.1;
+		glutPostRedisplay();
+		break;
+	case 0x65://e
+		pz += 0.1;
+		glutPostRedisplay();
+		break;
+	case 0x62: //b
+		px = 0.0;
+		py = 0.0;
+		pz = 10.0;
+		glutPostRedisplay();
+		break;
 	}
 }
+
+
 
 /* Fonction executee lors de l'appui            */
 /* d'une touche speciale du clavier :           */
@@ -502,42 +561,12 @@ static void special(int key, int x, int y) {
 		glutPostRedisplay();
 		break;
 	case GLUT_KEY_PAGE_UP:
-		switch (glutGetModifiers()) {
-		case GLUT_ACTIVE_ALT:
-			nb++;
-			glutPostRedisplay();
-			break;
-		case GLUT_ACTIVE_CTRL:
-			nP++;
-			if (nP == nb)
-				nP = nb - 1;
-			glutPostRedisplay();
-			break;
-		default:
-			rz++;
-			glutPostRedisplay();
-		}
+		rz++;
+		glutPostRedisplay();
 		break;
 	case GLUT_KEY_PAGE_DOWN:
-		switch (glutGetModifiers()) {
-		case GLUT_ACTIVE_ALT:
-			nb--;
-			if (nb == 1)
-				nb = 2;
-			if (nP == nb)
-				nP = nb - 1;
-			glutPostRedisplay();
-			break;
-		case GLUT_ACTIVE_CTRL:
-			nP--;
-			if (nP < 0)
-				nP = 0;
-			glutPostRedisplay();
-			break;
-		default:
-			rz--;
-			glutPostRedisplay();
-		}
+		rz--;
+		glutPostRedisplay();
 		break;
 	}
 }
@@ -583,7 +612,7 @@ static void clean(void) {
 }
 
 /* Fonction principale                          */
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 
 	atexit(clean);
 
@@ -591,7 +620,7 @@ int main(int argc, char **argv) {
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(wTx, wTy);
 	glutInitWindowPosition(wPx, wPy);
-	glutCreateWindow("Gestion �v�nementielle de GLUt");
+	glutCreateWindow("Bobsleigh");
 	init();
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
