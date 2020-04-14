@@ -46,6 +46,7 @@ static float rz = 0.0F;	   // Rotation en z
 static double px = 0.0;
 static double py = 0.0;
 static double pz = 10.0;
+
 static int version = 0;
 
 
@@ -57,7 +58,11 @@ static int mouseActive = 0;
 static int nb = 100;
 static int nP = 0;
 static int aff = 0;
+
+
+// Pour les textures
 static unsigned int textureID = 0;
+static int texture = 1;
 
 static int taille = 4;
 static int isLine = 0;		// Affichage fil de fer
@@ -73,6 +78,16 @@ static int isLine = 0;		// Affichage fil de fer
 /* de trois textures 2D                         */
 
 static void chargeTexture(unsigned int textureID, char* filename) {
+	printf("CHARGE TEXTURE\n");
+	glClearColor(0.25F, 0.25F, 0.25F, 1.0F);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_NORMALIZE);
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
+	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	{ int rx;
@@ -81,11 +96,17 @@ static void chargeTexture(unsigned int textureID, char* filename) {
 	if (img) {
 		glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
 		free(img);
+		printf("Texture chargee %d\n", textureID);
+	}
+	else {
+		glDeleteTextures(1, &textureID);
+		textureID = 0;
+		printf("Texture non chargee\n");
 	} }
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
 
 /* Calcul la position d'un point sur une courbe  */
@@ -177,20 +198,24 @@ void mySolidCube(double c) {
 
 /* Platforme de lancement du boblseigh */
 void startPlateforme() {
+	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 	glTranslatef(0.0F, -3.0F, 0.0F);
 	glScalef(30.0F, 0.5F, 100.0F);
 	mySolidCube(1.0F);
 	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
 }
 
 /* Platforme de lancement du boblseigh */
 void stopPlateforme() {
+	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 	glTranslatef(500.0F, -300.0F, 0.0F);
 	glScalef(30.0F, 0.5F, 100.0F);
 	mySolidCube(1.0F);
 	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
 }
 
 /* Fonction qui genere un cylindre	*/
@@ -377,7 +402,7 @@ static void myLuge() {
 
 
 static void init(void) {
-	const GLfloat mat_shininess[] = { 50.0 };
+	/*const GLfloat mat_shininess[] = { 50.0 };
 	glMaterialfv(GL_FRONT, GL_SPECULAR, blanc1);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
@@ -389,23 +414,10 @@ static void init(void) {
 	glEnable(GL_LIGHT2);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_NORMALIZE);
-	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glEnable(GL_TEXTURE_2D);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	{ int rx;
-	int ry;
-	/*unsigned char* img = chargeImagePng("./Ressources/Img/glace.png", &rx, &ry);
-	if (img) {
-		glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
-		free(img);
-	} */}
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glEnable(GL_NORMALIZE);*/
+	
+	// Chagrment des textures dans le dossier Bin/image
+	chargeTexture(textureID, "Image/glacePNG.png");
 }
 
 /* Scene dessinee                               */
@@ -463,9 +475,9 @@ static void reshape(int wx, int wy) {
 	glLoadIdentity();
 	double ratio = (double)wx / wy;
 	if (ratio >= 1.0)
-		gluPerspective(80.0, ratio, 1.0, 20.0);
+		gluPerspective(80.0, ratio, 1.0, 2000.0);
 	else
-		gluPerspective(80.0 / ratio, ratio, 1.0, 20.0);
+		gluPerspective(80.0 / ratio, ratio, 1.0, 2000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -623,6 +635,8 @@ static void clean(void) {
 
 /* Fonction principale                          */
 int main(int argc, char** argv) {
+	Pos3D p = new Pos3D(4.0F,5.0F,6.0F);
+	printf("x %f y %f z %f\n", p.x, p.y, p.z);
 
 	atexit(clean);
 
