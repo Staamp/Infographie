@@ -67,7 +67,25 @@ static int texture = 1;
 static int taille = 4;
 static int isLine = 0;		// Affichage fil de fer
 
+static int nbPoints = 10;
 
+
+static double NRUBS[4][4] = { { -1.0 / 6.0,  3.0 / 6.0, -3.0 / 6.0,  1.0 / 6.0 },
+									{  3.0 / 6.0, -6.0 / 6.0,  3.0 / 6.0,      0.0 },
+									{ -3.0 / 6.0,      0.0,  3.0 / 6.0,      0.0 },
+									{  1.0 / 6.0,  4.0 / 6.0,  1.0 / 6.0,      0.0 } };
+
+static double CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 2.0 },
+									{  2.0 / 2.0, -5.0 / 2.0,  4.0 / 2.0, -1.0 / 2.0 },
+									{ -1.0 / 2.0,      0.0,  1.0 / 2.0,      0.0 },
+									{      0.0,  2.0 / 2.0,      0.0,      0.0 } };
+
+static void vertex(Pos3D* p, int couleur, double taille) {
+	glPushMatrix();
+	glTranslated(p->x, p->y, p->z);
+	glutSolidSphere(taille, 36, 18);
+	glPopMatrix();
+}
 
 //////////////////////////////////////////////////
 
