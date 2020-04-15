@@ -176,37 +176,37 @@ void mySolidCube(double c) {
 	c /= 2.0;
 	glBegin(GL_QUADS);
 	glNormal3f(0.0F, 0.0F, 1.0F);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	//glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(c, c, c); // 1 
 	glVertex3d(-c, c, c); // 2 
 	glVertex3d(-c, -c, c); // 3 
 	glVertex3d(c, -c, c); // 4 
 	glNormal3f(0.0F, 1.0F, 0.0F);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	//glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(c, c, c); // 1 
 	glVertex3d(c, c, -c); // 5 
 	glVertex3d(-c, c, -c); // 6 
 	glVertex3d(-c, c, c); // 2 
 	glNormal3f(1.0F, 0.0F, 0.0F);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	//glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(c, c, c); // 1 
 	glVertex3d(c, -c, c); // 4 
 	glVertex3d(c, -c, -c); // 7 
 	glVertex3d(c, c, -c); // 5 
 	glNormal3f(0.0F, -1.0F, 0.0F);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	//glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(c, -c, c); // 4 
 	glVertex3d(-c, -c, c); // 3 
 	glVertex3d(-c, -c, -c); // 8 
 	glVertex3d(c, -c, -c); // 7 
 	glNormal3f(-1.0F, 0.0F, 0.0F);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	//glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(-c, -c, c); // 3 
 	glVertex3d(-c, c, c); // 2 
 	glVertex3d(-c, c, -c); // 6 
 	glVertex3d(-c, -c, -c); // 8 
 	glNormal3f(0.0F, 0.0F, -1.0F);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	//glBindTexture(GL_TEXTURE_2D, textureID);
 	glVertex3d(-c, c, -c); // 6 
 	glVertex3d(c, c, -c); // 5 
 	glVertex3d(c, -c, -c); // 7 
@@ -406,7 +406,6 @@ static void myLuge() {
 	glTranslatef(-2.0F, -0.6F, -6.0F);
 	linkLuge();
 	glPopMatrix();
-	glPopMatrix();
 
 	glPushMatrix();
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, noir);
@@ -588,7 +587,7 @@ static void keyboard(unsigned char key, int x, int y) {
 /*   - touches de fonction                      */
 
 static void special(int key, int x, int y) {
-	printf("M  %4d %4d %4d\n", key, x, y);
+	//printf("M  %4d %4d %4d\n", key, x, y);
 	switch (key) {
 	case GLUT_KEY_UP:
 		rx++;
@@ -659,9 +658,7 @@ static void clean(void) {
 
 /* Fonction principale                          */
 int main(int argc, char** argv) {
-	Pos3D p = new Pos3D(10.0F,10.0F,10.0F);
-	printf("x %f y %f z %f\n", p.x, p.y, p.z);
-	printf("rx %f ry %f rz %f\n", rx, ry, rz);
+	Pos3D p = new Pos3D(0.0F,0.0F,20.0F);
 
 	vertex(&p, 1, 2.0);
 
