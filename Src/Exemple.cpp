@@ -34,46 +34,49 @@ static float gris[4] = { 0.65F,0.65F,0.65F,1.0F };
 static const float blanc1[] = { 1.2F,1.2F,1.2F,1.0F };
 
 
-static int wTx = 480;      // Resolution horizontale de la fenetre
-static int wTy = 480;      // Resolution verticale de la fenetre
-static int wPx = 50;       // Position horizontale de la fenetre
-static int wPy = 50;       // Position verticale de la fenetre
+static int wTx = 480;					// Resolution horizontale de la fenetre
+static int wTy = 480;					// Resolution verticale de la fenetre
+static int wPx = 50;					// Position horizontale de la fenetre
+static int wPy = 50;					// Position verticale de la fenetre
 
-static float rx = 0.0F;	   // Rotation en x
-static float ry = 0.0F;	   // Rotation en y
-static float rz = 0.0F;	   // Rotation en z
+static float rx = 0.0F;					// Rotation en x
+static float ry = 0.0F;					// Rotation en y
+static float rz = 0.0F;					// Rotation en z
 
-static double px = 0.0;	   // pour les cameras et glutlookat
-static double py = 0.0;    // pour les cameras et glutlookat
-static double pz = 10.0;   // pour les cameras et glutlookat
+static double px = 0.0;					// pour les cameras et glutlookat
+static double py = 0.0;					// pour les cameras et glutlookat
+static double pz = 10.0;				// pour les cameras et glutlookat
+static int versionCamera = 0;			//changer le type de camera
 
-static int version = 0;
+static int isLine = 0;					// Affichage fil de fer
 
-static int mx;			   // pour la souris
-static int mouseActive = 0;// pour la souris
+static int mx;							// pour la souris
+static int mouseActive = 0;				// pour la souris
 
 static unsigned int textureGlace = 0;	//Texture glace
 
-static int isLine = 0;		// Affichage fil de fer
 
-
-
-
-//////////////////////////////////////////////////
 
 static int nbPoints = 10;
 
 static double NRUBS[4][4] = { { -1.0 / 6.0,  3.0 / 6.0, -3.0 / 6.0,  1.0 / 6.0 },
-									{  3.0 / 6.0, -6.0 / 6.0,  3.0 / 6.0,      0.0 },
-									{ -3.0 / 6.0,      0.0,  3.0 / 6.0,      0.0 },
-									{  1.0 / 6.0,  4.0 / 6.0,  1.0 / 6.0,      0.0 } };
+							  {  3.0 / 6.0, -6.0 / 6.0,  3.0 / 6.0,        0.0 },
+							  { -3.0 / 6.0,		   0.0,  3.0 / 6.0,        0.0 },
+							  {  1.0 / 6.0,  4.0 / 6.0,  1.0 / 6.0,        0.0 } };
 
 static double CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 2.0 },
 									{  2.0 / 2.0, -5.0 / 2.0,  4.0 / 2.0, -1.0 / 2.0 },
-									{ -1.0 / 2.0,      0.0,  1.0 / 2.0,      0.0 },
-									{      0.0,  2.0 / 2.0,      0.0,      0.0 } };
+									{ -1.0 / 2.0,        0.0,  1.0 / 2.0,        0.0 },
+									{        0.0,  2.0 / 2.0,        0.0,        0.0 } };
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 static void vertex(Pos3D* p, int couleur, double taille) {
+	printf("VERTEX\n");
 	glPushMatrix();
 	glTranslated(p->x, p->y, p->z);
 	glutSolidSphere(taille, 36, 18);
@@ -301,7 +304,6 @@ static void myRectangle(double h, double l, double lo) {
 	glVertex3d(l, -h, -lo); // 7 
 	glVertex3d(-l, -h, -lo); // 8 
 	glEnd();
-
 }
 
 /* Fonction qui genere un cylindre plein	*/
@@ -446,7 +448,7 @@ static void display(void) {
 	glRotatef(ry, 0.0F, 1.0F, 0.0F);
 	glRotatef(rz, 0.0F, 0.0F, 1.0F);
 
-	switch (version) {
+	switch (versionCamera) {
 	case 0:
 		glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
 		gluLookAt(px, py, pz, px, py, pz-1, 0.0, 1.0, 0.0);
@@ -629,10 +631,10 @@ static void clean(void) {
 
 /* Fonction principale                          */
 int main(int argc, char** argv) {
+
 	Pos3D p = new Pos3D(0.0F,0.0F,20.0F);
-
-	vertex(&p, 1, 2.0);
-
+	vertex(&p, 120, 5.0);
+	
 	atexit(clean);
 
 	glutInit(&argc, argv);
