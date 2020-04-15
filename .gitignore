@@ -4,4 +4,5 @@ Projet/.vs/
 
 Temp/
 
-Bin/
+Bin/Exemple.exe
+Bin/glut32.dll
