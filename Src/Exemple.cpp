@@ -43,9 +43,9 @@ static float rx = 0.0F;	   // Rotation en x
 static float ry = 0.0F;	   // Rotation en y
 static float rz = 0.0F;	   // Rotation en z
 
-static double px = 0.0;
-static double py = 0.0;
-static double pz = 10.0;
+static double px = 0.0;	   // pour les cameras et glutlookat
+static double py = 0.0;    // pour les cameras et glutlookat
+static double pz = 10.0;   // pour les cameras et glutlookat
 
 static int version = 0;
 
@@ -516,6 +516,7 @@ static void idle(void) {
 static void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
 	case 0x0D:	//enter
+		printf("ENTRER");
 		taille = (taille == 10) ? 4 : 10;
 		glutPostRedisplay();
 		break;
@@ -569,6 +570,11 @@ static void keyboard(unsigned char key, int x, int y) {
 		px = 0.0;
 		py = 0.0;
 		pz = 10.0;
+
+		rx = 0.0;
+		ry = 0.0;
+		rz = 0.0;
+
 		glutPostRedisplay();
 		break;
 	}
@@ -653,8 +659,11 @@ static void clean(void) {
 
 /* Fonction principale                          */
 int main(int argc, char** argv) {
-	Pos3D p = new Pos3D(4.0F,5.0F,6.0F);
+	Pos3D p = new Pos3D(10.0F,10.0F,10.0F);
 	printf("x %f y %f z %f\n", p.x, p.y, p.z);
+	printf("rx %f ry %f rz %f\n", rx, ry, rz);
+
+	vertex(&p, 1, 2.0);
 
 	atexit(clean);
 

@@ -1,6 +1,8 @@
 .vs/
 
 Projet/.vs/
+Projet/Exemple/Exemple.vcxproj
+Projet/Exemple/Exemple.vcxproj.filters
 
 Temp/
 
