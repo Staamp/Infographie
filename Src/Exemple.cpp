@@ -49,26 +49,19 @@ static double pz = 10.0;   // pour les cameras et glutlookat
 
 static int version = 0;
 
+static int mx;			   // pour la souris
+static int mouseActive = 0;// pour la souris
 
+static unsigned int textureGlace = 0;	//Texture glace
 
-static int mx;
-
-static float r1 = 0.0F;
-static int mouseActive = 0;
-static int nb = 100;
-static int nP = 0;
-static int aff = 0;
-
-
-// Pour les textures
-static unsigned int textureID = 0;
-static int texture = 1;
-
-static int taille = 4;
 static int isLine = 0;		// Affichage fil de fer
 
-static int nbPoints = 10;
 
+
+
+//////////////////////////////////////////////////
+
+static int nbPoints = 10;
 
 static double NRUBS[4][4] = { { -1.0 / 6.0,  3.0 / 6.0, -3.0 / 6.0,  1.0 / 6.0 },
 									{  3.0 / 6.0, -6.0 / 6.0,  3.0 / 6.0,      0.0 },
@@ -87,14 +80,11 @@ static void vertex(Pos3D* p, int couleur, double taille) {
 	glPopMatrix();
 }
 
-//////////////////////////////////////////////////
-
 /* Fonction d'initialisation des parametres     */
 /* OpenGL ne changeant pas au cours de la vie   */
 /* du programme                                 */
 /* Contient en particulier l'initialisation     */
 /* de trois textures 2D                         */
-
 static void chargeTexture(unsigned int textureID, char* filename) {
 	printf("CHARGE TEXTURE\n");
 	glClearColor(0.25F, 0.25F, 0.25F, 1.0F);
@@ -134,7 +124,6 @@ static void chargeTexture(unsigned int textureID, char* filename) {
 /*     t a prendre dans l'intervalle [0.0,1.0]   */
 /* mb : la matrice de base                       */
 /* p : le point resultat                         */
-
 static void determinationPositionSurBSpline(Pos3D** g, double t, double mb[4][4], Pos3D* p) {
 	double vt[4] = { t * t * t,t * t,t,1.0 };
 	double vtmb[4] = { 0.0,0.0,0.0,0.0 };
@@ -158,7 +147,6 @@ static void determinationPositionSurBSpline(Pos3D** g, double t, double mb[4][4]
 /* mb : la matrice de base                       */
 /* nb : le nombre de points a calculer           */
 /* tRes : le tableau de points resultat          */
-
 static void calculBSpline(Pos3D** tPos, int n, double mb[4][4], int nb, Pos3D** tRes) {
 	for (int i = 0; i < nb; i++) {
 		double pos = i / (nb - 1.0) * (n - 3);
@@ -176,37 +164,37 @@ void mySolidCube(double c) {
 	c /= 2.0;
 	glBegin(GL_QUADS);
 	glNormal3f(0.0F, 0.0F, 1.0F);
-	//glBindTexture(GL_TEXTURE_2D, textureID);
+
 	glVertex3d(c, c, c); // 1 
 	glVertex3d(-c, c, c); // 2 
 	glVertex3d(-c, -c, c); // 3 
 	glVertex3d(c, -c, c); // 4 
 	glNormal3f(0.0F, 1.0F, 0.0F);
-	//glBindTexture(GL_TEXTURE_2D, textureID);
+
 	glVertex3d(c, c, c); // 1 
 	glVertex3d(c, c, -c); // 5 
 	glVertex3d(-c, c, -c); // 6 
 	glVertex3d(-c, c, c); // 2 
 	glNormal3f(1.0F, 0.0F, 0.0F);
-	//glBindTexture(GL_TEXTURE_2D, textureID);
+
 	glVertex3d(c, c, c); // 1 
 	glVertex3d(c, -c, c); // 4 
 	glVertex3d(c, -c, -c); // 7 
 	glVertex3d(c, c, -c); // 5 
 	glNormal3f(0.0F, -1.0F, 0.0F);
-	//glBindTexture(GL_TEXTURE_2D, textureID);
+
 	glVertex3d(c, -c, c); // 4 
 	glVertex3d(-c, -c, c); // 3 
 	glVertex3d(-c, -c, -c); // 8 
 	glVertex3d(c, -c, -c); // 7 
 	glNormal3f(-1.0F, 0.0F, 0.0F);
-	//glBindTexture(GL_TEXTURE_2D, textureID);
+
 	glVertex3d(-c, -c, c); // 3 
 	glVertex3d(-c, c, c); // 2 
 	glVertex3d(-c, c, -c); // 6 
 	glVertex3d(-c, -c, -c); // 8 
 	glNormal3f(0.0F, 0.0F, -1.0F);
-	//glBindTexture(GL_TEXTURE_2D, textureID);
+
 	glVertex3d(-c, c, -c); // 6 
 	glVertex3d(c, c, -c); // 5 
 	glVertex3d(c, -c, -c); // 7 
@@ -434,7 +422,7 @@ static void init(void) {
 	glEnable(GL_NORMALIZE);*/
 	
 	// Chagrment des textures dans le dossier Bin/image
-	chargeTexture(textureID, "Image/glacePNG.png");
+	chargeTexture(textureGlace, "Image/glacePNG.png");
 }
 
 /* Scene dessinee                               */
@@ -448,10 +436,8 @@ static void scene(void) {
 
 /* Fonction executee lors d'un rafraichissement */
 /* de la fenetre de dessin                      */
-
 static void display(void) {
 	//printf("D\n");
-	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	const GLfloat light0_position[] = { 0.0,0.0,10.0,1.0 };
 	glPushMatrix();
@@ -481,7 +467,6 @@ static void display(void) {
 
 /* Fonction executee lors d'un changement       */
 /* de la taille de la fenetre OpenGL            */
-
 static void reshape(int wx, int wy) {
 	printf("R\n");
 	wTx = wx;
@@ -502,25 +487,19 @@ static void reshape(int wx, int wy) {
 
 /* Fonction executee lorsqu'aucun evenement     */
 /* n'est en file d'attente                      */
-
 static void idle(void) {
 	//printf("I\n");
-	r1 += 1.0F;
 	glutPostRedisplay();
 }
 
 /* Fonction executee lors de l'appui            */
 /* d'une touche alphanumerique du clavier       */
-
 static void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
 	case 0x0D:	//enter
-		printf("ENTRER");
-		taille = (taille == 10) ? 4 : 10;
 		glutPostRedisplay();
 		break;
 	case 0x20:	//space
-		aff = (aff + 1) % 6;
 		glutPostRedisplay();
 		break;
 	case 0x1B:	//echape	
@@ -540,7 +519,6 @@ static void keyboard(unsigned char key, int x, int y) {
 			glutPostRedisplay();
 		}
 		break;
-	
 	case 0x7A: //z
 		py += 0.1;
 		glutPostRedisplay();
@@ -568,24 +546,20 @@ static void keyboard(unsigned char key, int x, int y) {
 	case 0x62: //b
 		px = 0.0;
 		py = 0.0;
-		pz = 10.0;
-
+		pz = 20.0;
 		rx = 0.0;
 		ry = 0.0;
 		rz = 0.0;
-
 		glutPostRedisplay();
 		break;
 	}
 }
 
 
-
 /* Fonction executee lors de l'appui            */
 /* d'une touche speciale du clavier :           */
 /*   - touches de curseur                       */
 /*   - touches de fonction                      */
-
 static void special(int key, int x, int y) {
 	//printf("M  %4d %4d %4d\n", key, x, y);
 	switch (key) {
@@ -616,11 +590,11 @@ static void special(int key, int x, int y) {
 	}
 }
 
+
 /* Fonction executee lors de l'utilisation      */
 /* de la souris sur la fenetre                  */
-
 static void mouse(int button, int state, int x, int y) {
-	printf("M  %4d %4d %4d %4d\n", button, state, x, y);
+	//printf("M  %4d %4d %4d %4d\n", button, state, x, y);
 	/*if (state == GLUT_DOWN) {
 		mouseActive = 1;
 		mx = x;
@@ -633,9 +607,8 @@ static void mouse(int button, int state, int x, int y) {
 /* Fonction executee lors du passage            */
 /* de la souris sur la fenetre                  */
 /* avec un bouton presse                        */
-
 static void mouseMotion(int x, int y) {
-	printf("MM %4d %4d\n", x, y);
+	//printf("MM %4d %4d\n", x, y);
 	/*r1 += (x - mx);
 	mx = x;
 	glutPostOverlayRedisplay();*/
@@ -644,14 +617,12 @@ static void mouseMotion(int x, int y) {
 /* Fonction executee lors du passage            */
 /* de la souris sur la fenetre                  */
 /* sans bouton presse                           */
-
 static void passiveMouseMotion(int x, int y) {
 	printf("PM %4d %4d\n", x, y);
 }
 
-/* Fonction ex�cut�e automatiquement            */
-/* lors de l'ex�cution de la fonction exit()    */
-
+/* Fonction executee automatiquement            */
+/* lors de l'execution de la fonction exit()    */
 static void clean(void) {
 	printf("Bye\n");
 }
