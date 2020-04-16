@@ -59,15 +59,48 @@ static unsigned int textureGlace = 0;	//Texture glace
 
 static int nbPoints = 10;
 
-static double NRUBS[4][4] = { { -1.0 / 6.0,  3.0 / 6.0, -3.0 / 6.0,  1.0 / 6.0 },
+static float NRUBS[4][4] = { { -1.0 / 6.0,  3.0 / 6.0, -3.0 / 6.0,  1.0 / 6.0 },
 							  {  3.0 / 6.0, -6.0 / 6.0,  3.0 / 6.0,        0.0 },
 							  { -3.0 / 6.0,		   0.0,  3.0 / 6.0,        0.0 },
 							  {  1.0 / 6.0,  4.0 / 6.0,  1.0 / 6.0,        0.0 } };
 
-static double CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 2.0 },
+static float CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 2.0 },
 									{  2.0 / 2.0, -5.0 / 2.0,  4.0 / 2.0, -1.0 / 2.0 },
 									{ -1.0 / 2.0,        0.0,  1.0 / 2.0,        0.0 },
 									{        0.0,  2.0 / 2.0,        0.0,        0.0 } };
+
+
+
+static int nbPointsPos = 37;
+static Pos3D* tPos1[] = { new Pos3D(6.5F, 4.9F,-3.00F), new Pos3D(7.0F, 5.0F,-3.00F), new Pos3D(7.5F, 4.9F,-2.00F),
+						 new Pos3D(8.0F, 4.6F, 0.00F), new Pos3D(7.5F, 4.4F, 2.00F), new Pos3D(7.0F, 4.2F, 3.50F),
+						 new Pos3D(6.0F, 3.8F, 4.00F), new Pos3D(5.0F, 2.8F, 4.00F), new Pos3D(4.0F, 1.8F, 4.00F),
+						 new Pos3D(3.0F, 0.8F, 4.00F), new Pos3D(0.0F, 0.0F, 4.00F), new Pos3D(-1.4F, 0.7F, 3.75F),
+						 new Pos3D(-2.0F, 2.0F, 3.50F), new Pos3D(-1.4F, 3.3F, 3.25F), new Pos3D(0.0F, 4.0F, 3.00F),
+						 new Pos3D(1.4F, 3.3F, 2.75F), new Pos3D(2.0F, 2.0F, 2.50F), new Pos3D(1.0F, 0.7F, 2.25F),
+						 new Pos3D(-1.0F, 0.0F, 2.00F), new Pos3D(-2.4F, 0.7F, 1.75F), new Pos3D(-3.0F, 2.0F, 1.50F),
+						 new Pos3D(-2.4F, 3.3F, 1.25F), new Pos3D(-1.0F, 4.0F, 1.00F), new Pos3D(0.4F, 3.3F, 0.75F),
+						 new Pos3D(1.0F, 2.0F, 0.50F), new Pos3D(0.0F, 0.7F, 0.25F), new Pos3D(-2.0F, 0.2F, 0.00F),
+						 new Pos3D(-7.0F, 0.0F, 1.50F), new Pos3D(-8.0F, 0.0F,-1.30F), new Pos3D(-7.0F, 0.3F,-1.90F),
+						 new Pos3D(-6.0F, 1.8F,-2.40F), new Pos3D(-4.5F, 4.9F,-2.40F), new Pos3D(-3.0F, 3.2F,-2.40F),
+						 new Pos3D(0.5F, 2.4F,-2.80F), new Pos3D(3.5F, 4.4F,-2.80F), new Pos3D(4.5F, 4.7F,-2.90F),
+						 new Pos3D(5.5F, 4.8F,-3.00F) };
+
+
+
+static Pos3D* tPos[] = { new Pos3D(0.0F, 1.0F,1.0F), new Pos3D(7.0F, 5.0F,-3.00F), new Pos3D(7.5F, 4.9F,-2.00F),
+						 new Pos3D(0.0F, 2.0F, 2.0F), new Pos3D(7.5F, 4.4F, 2.00F), new Pos3D(7.0F, 4.2F, 3.50F),
+						 new Pos3D(0.0F, 3.0F, 3.0F), new Pos3D(5.0F, 2.8F, 4.00F), new Pos3D(4.0F, 1.8F, 4.00F),
+						 new Pos3D(3.0F, 0.8F, 4.00F), new Pos3D(0.0F, 0.0F, 4.00F), new Pos3D(-1.4F, 0.7F, 3.75F),
+						 new Pos3D(-2.0F, 2.0F, 3.50F), new Pos3D(-1.4F, 3.3F, 3.25F), new Pos3D(0.0F, 4.0F, 3.00F),
+						 new Pos3D(1.4F, 3.3F, 2.75F), new Pos3D(2.0F, 2.0F, 2.50F), new Pos3D(1.0F, 0.7F, 2.25F),
+						 new Pos3D(-1.0F, 0.0F, 2.00F), new Pos3D(-2.4F, 0.7F, 1.75F), new Pos3D(-3.0F, 2.0F, 1.50F),
+						 new Pos3D(-2.4F, 3.3F, 1.25F), new Pos3D(-1.0F, 4.0F, 1.00F), new Pos3D(0.4F, 3.3F, 0.75F),
+						 new Pos3D(1.0F, 2.0F, 0.50F), new Pos3D(0.0F, 0.7F, 0.25F), new Pos3D(-2.0F, 0.2F, 0.00F),
+						 new Pos3D(-7.0F, 0.0F, 1.50F), new Pos3D(-8.0F, 0.0F,-1.30F), new Pos3D(-7.0F, 0.3F,-1.90F),
+						 new Pos3D(-6.0F, 1.8F,-2.40F), new Pos3D(-4.5F, 4.9F,-2.40F), new Pos3D(-3.0F, 3.2F,-2.40F),
+						 new Pos3D(0.5F, 2.4F,-2.80F), new Pos3D(3.5F, 4.4F,-2.80F), new Pos3D(4.5F, 4.7F,-2.90F),
+						 new Pos3D(5.5F, 4.8F,-3.00F) };
 
 
 
@@ -82,6 +115,78 @@ static void vertex(Pos3D* p, int couleur, double taille) {
 	glutSolidSphere(taille, 36, 18);
 	glPopMatrix();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/* Calcul la position d'un point sur une courbe  */
+/* B-Spline controlee par quatre points          */
+/* tPos : le tableau des 4 points de controle    */
+/* t : la valeur de calcul du point              */
+/*     t a prendre dans l'intervalle [0.0,1.0]   */
+/* mb : la matrice de base                       */
+/* point : le point resultat                     */
+
+static void positionSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* point) {
+	float vt[4] = { t * t * t,t * t,t,1.0F };
+	float vtmb[4] = { 0.0F,0.0F,0.0F,0.0F };
+	for (int j = 0; j < 4; j++) {
+		for (int k = 0; k < 4; k++)
+			vtmb[j] += vt[k] * mb[k][j];
+	}
+	point->x = point->y = point->z = 0.0;
+	for (int j = 0; j < 4; j++) {
+		point->x += vtmb[j] * tPos[j]->x;
+		point->y += vtmb[j] * tPos[j]->y;
+		point->z += vtmb[j] * tPos[j]->z;
+	}
+}
+
+/* Modelise une courbe B-Spline par morceaux     */
+/* definie par un ensemble de points de controle */
+/* nbPoints : le nombre de points de contrôle    */
+/* tPos : le tableau des points de controle      */
+/* mb : la matrice de base                       */
+/* n : le nombre de points a calculer            */
+/* typePrimitive : le type de primitive OpenGL   */
+/*                 a utiliser                    */
+
+static void BSpline(int nbPoints, Pos3D** tPos, float mb[4][4], int n, GLenum typePrimitive) {
+	glBegin(typePrimitive);
+	for (int i = 0; i < n; i++) {
+		float t = i / (n - 1.0) * (nbPoints - 3);
+		int nb = (int)t;
+		if (nb == nbPoints - 3)
+			nb = nbPoints - 4;
+		Pos3D point;
+		positionSurBSpline(&tPos[nb], t - nb, mb, &point);
+		glVertex3f(point.x, point.y, point.z);
+	}
+	glEnd();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Fonction d'initialisation des parametres     */
 /* OpenGL ne changeant pas au cours de la vie   */
@@ -406,7 +511,40 @@ static void myLuge() {
 	glPopMatrix();
 }
 
+static void bezier(int nbPoints, Pos3D** tPos, int n, GLenum typePrimitive) {
+	float t, mt;
+	float x, y, z, fac;
+	long long* cn = (long long*)calloc(nbPoints, sizeof(long long));
+	cn[0] = 1;
+	cn[1] = nbPoints - 1;
+	for (int i = 2; i < nbPoints; i++)
+		cn[i] = (cn[i - 1] * (nbPoints - i)) / i;
+	glBegin(typePrimitive);
+	for (int i = 0; i < n; i++) {
+		t = (float)i / (n - 1);
+		mt = 1.0F - t;
+		x = y = z = 0.0F;
+		for (int j = 0; j < nbPoints; j++) {
+			fac = cn[j] * pow(t, j) * pow(mt, nbPoints - 1 - j);
+			x += fac * tPos[j]->x;
+			y += fac * tPos[j]->y;
+			z += fac * tPos[j]->z;
+		}
+		glVertex3f(x, y, z);
+	}
+	glEnd();
+	free(cn);
+}
 
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void init(void) {
 	/*const GLfloat mat_shininess[] = { 50.0 };
@@ -429,11 +567,22 @@ static void init(void) {
 
 /* Scene dessinee                               */
 static void scene(void) {
-	glPushMatrix();
+	/*glPushMatrix();
 	myLuge();
 	startPlateforme();
 	stopPlateforme();
-	glPopMatrix();
+	glPopMatrix();*/
+
+	//Pos3D p = new Pos3D(4.0,5.0,6.0);
+	//vertex(&p, 5, 1.0);
+
+
+	BSpline(nbPointsPos, tPos, NRUBS, 100, GL_QUADS);
+
+	//BSpline(nbPointsPos, tPos, CATMULL_ROM, 100, GL_LINE_STRIP);
+
+	//bezier(nbPointsPos, tPos, 100, GL_LINE_STRIP);
+
 }
 
 /* Fonction executee lors d'un rafraichissement */
@@ -632,9 +781,6 @@ static void clean(void) {
 /* Fonction principale                          */
 int main(int argc, char** argv) {
 
-	Pos3D p = new Pos3D(0.0F,0.0F,20.0F);
-	vertex(&p, 120, 5.0);
-	
 	atexit(clean);
 
 	glutInit(&argc, argv);
