@@ -64,6 +64,9 @@ static float NRUBS[4][4] = { { -1.0 / 6.0,  3.0 / 6.0, -3.0 / 6.0,  1.0 / 6.0 },
 							  { -3.0 / 6.0,		   0.0,  3.0 / 6.0,        0.0 },
 							  {  1.0 / 6.0,  4.0 / 6.0,  1.0 / 6.0,        0.0 } };
 
+
+
+
 static float CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 2.0 },
 									{  2.0 / 2.0, -5.0 / 2.0,  4.0 / 2.0, -1.0 / 2.0 },
 									{ -1.0 / 2.0,        0.0,  1.0 / 2.0,        0.0 },
@@ -71,7 +74,7 @@ static float CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 
 
 
 
-static int nbPointsPos = 37;
+static int nbPointsPos1 = 37;
 static Pos3D* tPos1[] = { new Pos3D(6.5F, 4.9F,-3.00F), new Pos3D(7.0F, 5.0F,-3.00F), new Pos3D(7.5F, 4.9F,-2.00F),
 						 new Pos3D(8.0F, 4.6F, 0.00F), new Pos3D(7.5F, 4.4F, 2.00F), new Pos3D(7.0F, 4.2F, 3.50F),
 						 new Pos3D(6.0F, 3.8F, 4.00F), new Pos3D(5.0F, 2.8F, 4.00F), new Pos3D(4.0F, 1.8F, 4.00F),
@@ -88,19 +91,28 @@ static Pos3D* tPos1[] = { new Pos3D(6.5F, 4.9F,-3.00F), new Pos3D(7.0F, 5.0F,-3.
 
 
 
-static Pos3D* tPos[] = { new Pos3D(0.0F, 1.0F,1.0F), new Pos3D(7.0F, 5.0F,-3.00F), new Pos3D(7.5F, 4.9F,-2.00F),
-						 new Pos3D(0.0F, 2.0F, 2.0F), new Pos3D(7.5F, 4.4F, 2.00F), new Pos3D(7.0F, 4.2F, 3.50F),
-						 new Pos3D(0.0F, 3.0F, 3.0F), new Pos3D(5.0F, 2.8F, 4.00F), new Pos3D(4.0F, 1.8F, 4.00F),
-						 new Pos3D(3.0F, 0.8F, 4.00F), new Pos3D(0.0F, 0.0F, 4.00F), new Pos3D(-1.4F, 0.7F, 3.75F),
-						 new Pos3D(-2.0F, 2.0F, 3.50F), new Pos3D(-1.4F, 3.3F, 3.25F), new Pos3D(0.0F, 4.0F, 3.00F),
-						 new Pos3D(1.4F, 3.3F, 2.75F), new Pos3D(2.0F, 2.0F, 2.50F), new Pos3D(1.0F, 0.7F, 2.25F),
-						 new Pos3D(-1.0F, 0.0F, 2.00F), new Pos3D(-2.4F, 0.7F, 1.75F), new Pos3D(-3.0F, 2.0F, 1.50F),
-						 new Pos3D(-2.4F, 3.3F, 1.25F), new Pos3D(-1.0F, 4.0F, 1.00F), new Pos3D(0.4F, 3.3F, 0.75F),
-						 new Pos3D(1.0F, 2.0F, 0.50F), new Pos3D(0.0F, 0.7F, 0.25F), new Pos3D(-2.0F, 0.2F, 0.00F),
-						 new Pos3D(-7.0F, 0.0F, 1.50F), new Pos3D(-8.0F, 0.0F,-1.30F), new Pos3D(-7.0F, 0.3F,-1.90F),
-						 new Pos3D(-6.0F, 1.8F,-2.40F), new Pos3D(-4.5F, 4.9F,-2.40F), new Pos3D(-3.0F, 3.2F,-2.40F),
-						 new Pos3D(0.5F, 2.4F,-2.80F), new Pos3D(3.5F, 4.4F,-2.80F), new Pos3D(4.5F, 4.7F,-2.90F),
-						 new Pos3D(5.5F, 4.8F,-3.00F) };
+static int nbPointsPos2 = 37;
+//									x     y    z
+static Pos3D* tPos2[] = { new Pos3D(0.0F, 0.0F, 1.0F), new Pos3D(1.0F, 0.0F, 3.0F), new Pos3D(1.0F, 0.0F, 5.0F),
+						 new Pos3D(1.0F, 0.0F, 1.0F), new Pos3D(2.0F, 0.0F, 3.0F), new Pos3D(2.0F, 0.0F, 5.0F),
+						 new Pos3D(2.0F, 0.0F, 1.0F), new Pos3D(3.0F, 0.0F, 3.0F), new Pos3D(3.0F, 0.0F, 5.0F),
+						 new Pos3D(3.0F, 0.0F, 1.0F), new Pos3D(4.0F, 0.0F, 3.0F), new Pos3D(4.0F, 0.0F, 5.0F),
+						 new Pos3D(4.0F, 0.0F, 1.0F), new Pos3D(5.0F, 0.0F, 3.0F), new Pos3D(5.0F, 0.0F, 5.0F),
+						 new Pos3D(5.0F, 0.0F, 1.0F), new Pos3D(6.0F, 0.0F, 3.0F), new Pos3D(6.0F, 0.0F, 5.0F),
+						 new Pos3D(6.0F, 0.0F, 1.0F), new Pos3D(1.0F, 0.0F, 4.0F), new Pos3D(1.0F, 0.0F, 6.0F),
+						 new Pos3D(1.0F, 0.0F, 2.0F), new Pos3D(2.0F, 0.0F, 4.0F), new Pos3D(2.0F, 0.0F, 6.0F),
+						 new Pos3D(2.0F, 0.0F, 2.0F), new Pos3D(3.0F, 0.0F, 4.0F), new Pos3D(3.0F, 0.0F, 6.0F),
+						 new Pos3D(3.0F, 0.0F, 2.0F), new Pos3D(4.0F, 0.0F, 4.0F), new Pos3D(4.0F, 0.0F, 6.0F),
+						 new Pos3D(4.0F, 0.0F, 2.0F), new Pos3D(5.0F, 0.0F, 4.0F), new Pos3D(5.0F, 0.0F, 6.0F),
+						 new Pos3D(5.0F, 0.0F, 2.0F), new Pos3D(6.0F, 0.0F, 4.0F), new Pos3D(6.0F, 0.0F, 6.0F),
+						 new Pos3D(6.0F, 0.0F, 2.0F) };
+
+
+static int nbPointsPos = 16;
+static Pos3D* tPos[] = { new Pos3D(-3.0F,-3.0F,-1.0F), new Pos3D(-1.0F,-3.0F,1.0F), new Pos3D(1.0F,-3.0F,2.0F), new Pos3D(3.0F,-3.0F,-1.0F),
+						 new Pos3D(-3.0F,-1.0F,3.0F), new Pos3D(-1.0F,-1.0F,2.0F), new Pos3D(1.0F,-1.0F,-1.0F), new Pos3D(3.0F,-1.0F,1.0F),
+						 new Pos3D(-3.0F,1.0F,-1.0F), new Pos3D(-1.0F,1.0F,-1.0F), new Pos3D(1.0F,1.0F,1.0F), new Pos3D(3.0F,1.0F,-1.0F),
+						 new Pos3D(-3.0F,3.0F,-2.0F), new Pos3D(-1.0F,3.0F,1.0F), new Pos3D(1.0F,3.0F,1.0F), new Pos3D(3.0F,3.0F,1.0F) };
 
 
 
@@ -544,6 +556,207 @@ static void bezier(int nbPoints, Pos3D** tPos, int n, GLenum typePrimitive) {
 
 
 
+
+
+
+
+
+
+struct coord_3D {
+	GLfloat x = 0.0F;
+	GLfloat y = 0.0F;
+	GLfloat z = 0.0F;
+};
+
+typedef struct coord_3D coord_3D;
+typedef float matrice[4][4];
+typedef float vecteur[4];
+
+
+static GLfloat pts[16][4] = {
+  {-3.0F,-3.0F,-1.0F, 1.0F },{-1.0F,-3.0F, 1.0F, 1.0F },
+  { 1.0F,-3.0F, 2.0F, 1.0F },{ 3.0F,-3.0F,-1.0F, 1.0F },
+  {-3.0F,-1.0F, 3.0F, 1.0F },{-1.0F,-1.0F, 2.0F, 1.0F },
+  { 1.0F,-1.0F,-1.0F, 1.0F },{ 3.0F,-1.0F, 1.0F, 1.0F },
+  {-3.0F, 1.0F,-1.0F, 1.0F },{-1.0F, 1.0F,-1.0F, 1.0F },
+  { 1.0F, 1.0F, 1.0F, 1.0F },{ 3.0F, 1.0F,-1.0F, 1.0F },
+  {-3.0F, 3.0F,-2.0F, 1.0F },{-1.0F, 3.0F, 1.0F, 1.0F },
+  { 1.0F, 3.0F, 3.0F, 1.0F },{ 3.0F, 3.0F, 1.0F, 1.0F } };
+
+static coord_3D* points = (coord_3D*)pts;
+
+
+
+
+
+void point(coord_3D* p, coord_3D* n, coord_3D* t) {
+	glTexCoord2f(t->x, t->y);
+	glNormal3f(n->x, n->y, n->z);
+	glVertex3f(p->x, p->y, p->z);
+}
+
+void vectoriel(coord_3D* v1, coord_3D* v2, coord_3D* v) {
+	v->x = v1->y * v2->z - v1->z * v2->y;
+	v->y = v1->z * v2->x - v1->x * v2->z;
+	v->z = v1->x * v2->y - v1->y * v2->x;
+}
+
+void normalize(coord_3D* n) {
+	float d = (float)sqrt(n->x * n->x + n->y * n->y + n->z * n->z);
+	if (d != 0.0F) {
+		n->x /= d;
+		n->y /= d;
+		n->z /= d;
+	}
+}
+
+void transposition(matrice m, matrice t) {
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
+			t[i][j] = m[j][i];
+}
+
+void produitMatriceMatrice(matrice m1, matrice m2, matrice m) {
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++) {
+			m[i][j] = 0;
+			for (int k = 0; k < 4; k++)
+				m[i][j] += m1[i][k] * m2[k][j];
+		}
+}
+
+void produitMatriceVecteur(matrice m, vecteur v, vecteur r) {
+	for (int i = 0; i < 4; i++) {
+		r[i] = 0;
+		for (int j = 0; j < 4; j++)
+			r[i] += m[i][j] * v[j];
+	}
+}
+
+void produitVecteurMatrice(vecteur v, matrice m, vecteur r) {
+	for (int i = 0; i < 4; i++) {
+		r[i] = 0;
+		for (int j = 0; j < 4; j++)
+			r[i] += v[j] * m[j][i];
+	}
+}
+
+float produitVecteurVecteur(vecteur v1, vecteur v2) {
+	float r = 0;
+	for (int i = 0; i < 4; i++)
+		r += v1[i] * v2[i];
+	return(r);
+}
+
+void bicubiquePatch(int n, matrice m, matrice mprime, coord_3D* p) {
+	int i, j;
+	coord_3D** pts = (coord_3D**)malloc(n * sizeof(coord_3D*));
+	coord_3D** nms = (coord_3D**)malloc(n * sizeof(coord_3D*));
+	coord_3D** tex = (coord_3D**)malloc(n * sizeof(coord_3D*));
+	for (i = 0; i < n; i++) {
+		tex[i] = (coord_3D*)malloc(n * sizeof(coord_3D));
+		pts[i] = (coord_3D*)malloc(n * sizeof(coord_3D));
+		nms[i] = (coord_3D*)malloc(n * sizeof(coord_3D));
+	}
+	matrice tx, a, aa;
+	matrice ty, b, bb;
+	matrice tz, c, cc;
+	for (i = 0; i < 4; i++)
+		for (j = 0; j < 4; j++) {
+			a[i][j] = p[i * 4 + j].x;
+			b[i][j] = p[i * 4 + j].y;
+			c[i][j] = p[i * 4 + j].z;
+		}
+	matrice trans;
+	transposition(mprime, trans);
+	produitMatriceMatrice(m, a, aa);
+	produitMatriceMatrice(m, b, bb);
+	produitMatriceMatrice(m, c, cc);
+	produitMatriceMatrice(aa, trans, tx);
+	produitMatriceMatrice(bb, trans, ty);
+	produitMatriceMatrice(cc, trans, tz);
+	for (i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			float s = (float)i / (float)(n - 1);
+			float t = (float)j / (float)(n - 1);
+			vecteur S = { s * s * s,s * s,s,1.0F };
+			vecteur T = { t * t * t,t * t,t,1.0F };
+			vecteur dS = { 3 * s * s,2 * s,1.0F,0.0F };
+			vecteur dT = { 3 * t * t,2 * t,1.0F,0.0F };
+			vecteur d;
+			coord_3D ds, dt;
+			produitVecteurMatrice(S, tx, d);
+			float x = produitVecteurVecteur(d, T);
+			produitVecteurMatrice(dS, tx, d);
+			ds.x = produitVecteurVecteur(d, T);
+			produitVecteurMatrice(S, tx, d);
+			dt.x = produitVecteurVecteur(d, dT);
+			produitVecteurMatrice(S, ty, d);
+			float y = produitVecteurVecteur(d, T);
+			produitVecteurMatrice(dS, ty, d);
+			ds.y = produitVecteurVecteur(d, T);
+			produitVecteurMatrice(S, ty, d);
+			dt.y = produitVecteurVecteur(d, dT);
+			produitVecteurMatrice(S, tz, d);
+			float z = produitVecteurVecteur(d, T);
+			produitVecteurMatrice(dS, tz, d);
+			ds.z = produitVecteurVecteur(d, T);
+			produitVecteurMatrice(S, tz, d);
+			dt.z = produitVecteurVecteur(d, dT);
+			vectoriel(&dt, &ds, &nms[i][j]);
+			normalize(&nms[i][j]);
+			tex[i][j].x = s;
+			tex[i][j].y = t;
+			pts[i][j].x = x;
+			pts[i][j].y = y;
+			pts[i][j].z = z;
+		}
+	}
+	glBegin(GL_QUADS);
+	for (i = 0; i < n - 1; i++)
+		for (int j = 0; j < n - 1; j++) {
+			point(&pts[i][j], &nms[i][j], &tex[i][j]);
+			point(&pts[i + 1][j], &nms[i + 1][j], &tex[i + 1][j]);
+			point(&pts[i + 1][j + 1], &nms[i + 1][j + 1], &tex[i + 1][j + 1]);
+			point(&pts[i][j + 1], &nms[i][j + 1], &tex[i][j + 1]);
+		}
+	glEnd();
+	for (i = 0; i < n; i++) {
+		free(tex[i]);
+		free(pts[i]);
+		free(nms[i]);
+	}
+	free(tex);
+	free(pts);
+	free(nms);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void init(void) {
@@ -577,7 +790,9 @@ static void scene(void) {
 	//vertex(&p, 5, 1.0);
 
 
-	BSpline(nbPointsPos, tPos, NRUBS, 100, GL_QUADS);
+	//BSpline(nbPointsPos, tPos, CATMULL_ROM, 100, GL_LINE_STRIP);
+
+	bicubiquePatch(30, NRUBS, NRUBS, points);
 
 	//BSpline(nbPointsPos, tPos, CATMULL_ROM, 100, GL_LINE_STRIP);
 
