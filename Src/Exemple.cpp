@@ -43,9 +43,9 @@ static float rx = 0.0F;					// Rotation en x
 static float ry = 0.0F;					// Rotation en y
 static float rz = 0.0F;					// Rotation en z
 
-static double px = 0.0;					// pour les cameras et glutlookat
-static double py = 0.0;					// pour les cameras et glutlookat
-static double pz = 10.0;				// pour les cameras et glutlookat
+static float px = 0.0;					// pour les cameras et glutlookat
+static float py = 0.0;					// pour les cameras et glutlookat
+static float pz = 10.0;				// pour les cameras et glutlookat
 static int versionCamera = 0;			//changer le type de camera
 
 static int isLine = 0;					// Affichage fil de fer
@@ -54,6 +54,29 @@ static int mx;							// pour la souris
 static int mouseActive = 0;				// pour la souris
 
 static unsigned int textureGlace = 0;	//Texture glace
+
+
+
+
+
+
+static float dx = 0.0F;					// Rotation en x
+static float dy = 0.0F;					// Rotation en y
+static float dz = 0.0F;					// Rotation en z
+
+static float rpx = 0.0;					// pour les cameras et glutlookat
+static float rpy = 0.0;					// pour les cameras et glutlookat
+static float rpz = 10.0;				// pour les cameras et glutlookat
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -74,20 +97,13 @@ static float CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 
 
 
 
-static int nbPointsPos1 = 37;
+static int nbPointsPos1 = 18;
 static Pos3D* tPos1[] = { new Pos3D(6.5F, 4.9F,-3.00F), new Pos3D(7.0F, 5.0F,-3.00F), new Pos3D(7.5F, 4.9F,-2.00F),
 						 new Pos3D(8.0F, 4.6F, 0.00F), new Pos3D(7.5F, 4.4F, 2.00F), new Pos3D(7.0F, 4.2F, 3.50F),
 						 new Pos3D(6.0F, 3.8F, 4.00F), new Pos3D(5.0F, 2.8F, 4.00F), new Pos3D(4.0F, 1.8F, 4.00F),
 						 new Pos3D(3.0F, 0.8F, 4.00F), new Pos3D(0.0F, 0.0F, 4.00F), new Pos3D(-1.4F, 0.7F, 3.75F),
 						 new Pos3D(-2.0F, 2.0F, 3.50F), new Pos3D(-1.4F, 3.3F, 3.25F), new Pos3D(0.0F, 4.0F, 3.00F),
-						 new Pos3D(1.4F, 3.3F, 2.75F), new Pos3D(2.0F, 2.0F, 2.50F), new Pos3D(1.0F, 0.7F, 2.25F),
-						 new Pos3D(-1.0F, 0.0F, 2.00F), new Pos3D(-2.4F, 0.7F, 1.75F), new Pos3D(-3.0F, 2.0F, 1.50F),
-						 new Pos3D(-2.4F, 3.3F, 1.25F), new Pos3D(-1.0F, 4.0F, 1.00F), new Pos3D(0.4F, 3.3F, 0.75F),
-						 new Pos3D(1.0F, 2.0F, 0.50F), new Pos3D(0.0F, 0.7F, 0.25F), new Pos3D(-2.0F, 0.2F, 0.00F),
-						 new Pos3D(-7.0F, 0.0F, 1.50F), new Pos3D(-8.0F, 0.0F,-1.30F), new Pos3D(-7.0F, 0.3F,-1.90F),
-						 new Pos3D(-6.0F, 1.8F,-2.40F), new Pos3D(-4.5F, 4.9F,-2.40F), new Pos3D(-3.0F, 3.2F,-2.40F),
-						 new Pos3D(0.5F, 2.4F,-2.80F), new Pos3D(3.5F, 4.4F,-2.80F), new Pos3D(4.5F, 4.7F,-2.90F),
-						 new Pos3D(5.5F, 4.8F,-3.00F) };
+						 new Pos3D(1.4F, 3.3F, 2.75F), new Pos3D(2.0F, 2.0F, 2.50F), new Pos3D(1.0F, 0.7F, 2.25F), };
 
 
 
@@ -327,7 +343,7 @@ void startPlateforme() {
 	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 	glTranslatef(0.0F, -3.0F, 0.0F);
-	glScalef(30.0F, 0.5F, 100.0F);
+	glScalef(10.0F, 0.5F, 25.0F);
 	mySolidCube(1.0F);
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
@@ -572,18 +588,16 @@ typedef struct coord_3D coord_3D;
 typedef float matrice[4][4];
 typedef float vecteur[4];
 
-
+/*
 static GLfloat pts[16][4] = {
-  {-3.0F,-3.0F,-1.0F, 1.0F },{-1.0F,-3.0F, 1.0F, 1.0F },
-  { 1.0F,-3.0F, 2.0F, 1.0F },{ 3.0F,-3.0F,-1.0F, 1.0F },
-  {-3.0F,-1.0F, 3.0F, 1.0F },{-1.0F,-1.0F, 2.0F, 1.0F },
-  { 1.0F,-1.0F,-1.0F, 1.0F },{ 3.0F,-1.0F, 1.0F, 1.0F },
-  {-3.0F, 1.0F,-1.0F, 1.0F },{-1.0F, 1.0F,-1.0F, 1.0F },
-  { 1.0F, 1.0F, 1.0F, 1.0F },{ 3.0F, 1.0F,-1.0F, 1.0F },
-  {-3.0F, 3.0F,-2.0F, 1.0F },{-1.0F, 3.0F, 1.0F, 1.0F },
-  { 1.0F, 3.0F, 3.0F, 1.0F },{ 3.0F, 3.0F, 1.0F, 1.0F } };
-
-static coord_3D* points = (coord_3D*)pts;
+  { 0.0F, 0.0F, 1.0F, 1.0F },{ 0.0F, 2.0F, 1.0F, 1.0F },
+  { 0.0F, 0.0F, 2.0F, 1.0F },{ 0.0F, 2.0F, 2.0F, 1.0F },
+  { 0.0F, 0.0F, 3.0F, 1.0F },{ 0.0F, 2.0F, 3.0F, 1.0F },
+  { 0.0F, 0.0F, 4.0F, 1.0F },{ 0.0F, 2.0F, 4.0F, 1.0F },
+  { 0.0F, 1.0F, 1.0F, 1.0F },{ 0.0F, 3.0F, 1.0F, 1.0F },
+  { 0.0F, 1.0F, 2.0F, 1.0F },{ 0.0F, 3.0F, 2.0F, 1.0F },
+  { 0.0F, 1.0F, 3.0F, 1.0F },{ 0.0F, 3.0F, 3.0F, 1.0F },
+  { 0.0F, 1.0F, 4.0F, 1.0F },{ 0.0F, 3.0F, 4.0F, 1.0F } };*/
 
 
 
@@ -738,21 +752,61 @@ void bicubiquePatch(int n, matrice m, matrice mprime, coord_3D* p) {
 
 
 
+static GLfloat ptsbc[16][4] = {
+  {-3.0F,-3.0F,-1.0F, 1.0F },{-1.0F,-3.0F, 1.0F, 1.0F },
+  { 1.0F,-3.0F, 2.0F, 1.0F },{ 3.0F,-3.0F,-1.0F, 1.0F },
+  {-3.0F,-1.0F, 3.0F, 1.0F },{-1.0F,-1.0F, 2.0F, 1.0F },
+  { 1.0F,-1.0F,-1.0F, 1.0F },{ 3.0F,-1.0F, 1.0F, 1.0F },
+  {-3.0F, 1.0F,-1.0F, 1.0F },{-1.0F, 1.0F,-1.0F, 1.0F },
+  { 1.0F, 1.0F, 1.0F, 1.0F },{ 3.0F, 1.0F,-1.0F, 1.0F },
+  {-3.0F, 3.0F,-2.0F, 1.0F },{-1.0F, 3.0F, 1.0F, 1.0F },
+  { 1.0F, 3.0F, 3.0F, 1.0F },{ 3.0F, 3.0F, 1.0F, 1.0F } };
 
 
 
 
 
 
+static coord_3D* ptsBZBZ = (coord_3D*)ptsbc;
 
 
 
 
+static matrice bezierMAT =
+{ -1.0F, 3.0F,-3.0F, 1.0F,
+   3.0F,-6.0F, 3.0F, 0.0F,
+  -3.0F, 3.0F, 0.0F, 0.0F,
+   1.0F, 0.0F, 0.0F, 0.0F };
+
+
+static GLfloat pts[16][3] = {
+	{-3.0F,-3.0F,-3.0F },{-1.0F,-3.0F,1.0F},{1.0F,-3.0F,1.0F },{3.0F,-3.0F,-3.0F },
+	{-3.0F,-1.0F,-3.0F},{-1.0F,-1.0F,1.0F},{1.0F,-1.0F,1.0F},{3.0F,-1.0F,-3.0F },
+	{-3.0F,1.0F,-3.0F},{-1.0F,1.0F,1.0F},{1.0F,1.0F,1.0F},{3.0F,1.0F,-3.0F },
+	{-3.0F,3.0F,-3.0F},{-1.0F,3.0F,1.0F},{1.0F,3.0F,1.0F},{3.0F,3.0F,-3.0F}
+};
 
 
 
 
+/*static GLfloat crbs[16][3] = {
+	{-3.0F,-3.0F,-5.0F },{-1.0F,-3.0F,1.0F},{1.0F,-3.0F,1.0F },{3.0F,-3.0F,-5.0F },
+	{-5.0F,-1.0F,-5.0F},{-3.0F,-1.0F,1.0F},{-1.0F,-1.0F,1.0F},{1.0F,-1.0F,-5.0F },
+	{-5.0F,1.0F,-5.0F},{-3.0F,1.0F,1.0F},{-1.0F,1.0F,1.0F},{1.0F,1.0F,-5.0F },
+	{-3.0F,3.0F,-5.0F},{-1.0F,3.0F,1.0F},{1.0F,3.0F,1.0F},{3.0F,3.0F,-5.0F}
+};*/
 
+static GLfloat crbs[16][3] = {
+	{-3.0F,-3.0F,-3.0F },{-1.0F,-3.0F,1.0F},{1.0F,-3.0F,1.0F },{3.0F,-3.0F,-3.0F },
+	{-3.0F,-1.0F,-3.0F},{-3.0F,-1.0F,1.0F},{-1.0F,-1.0F,1.0F},{1.0F,-1.0F,-3.0F },
+	{-3.0F,1.0F,-3.0F},{-3.0F,1.0F,1.0F},{-1.0F,1.0F,1.0F},{1.0F,1.0F,-3.0F },
+	{-3.0F,3.0F,-3.0F},{-1.0F,3.0F,1.0F},{1.0F,3.0F,1.0F},{3.0F,3.0F,-3.0F}
+};
+
+
+static coord_3D* points = (coord_3D*)pts;
+
+static coord_3D* courbe = (coord_3D*)crbs;
 
 
 
@@ -778,25 +832,95 @@ static void init(void) {
 	chargeTexture(textureGlace, "Image/glacePNG.png");
 }
 
+
+
+static void pisteLuge() {
+	glPushMatrix();
+	glTranslatef(0.0, -6.5, 32.0);
+	glRotatef(-70.0F,1.0,0.0,0.0);
+	glScalef(-5.0,-20.0,-5.0);
+	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glPopMatrix();
+
+	/*glPushMatrix();
+	glTranslatef(8.5, -15.0, 54.0);
+	glRotatef(180.0F, 0.0, 0.0, -1.0);
+	glRotatef(72.0F, 45.0, 0.0, 0.0);
+	glRotatef(6.0F, 0.0, 0.0, 1.0);
+	glScalef(-5.0, -5.0, -5.0);
+	bicubiquePatch(30, NRUBS, NRUBS, courbe);
+	glPopMatrix();*/
+
+	glPushMatrix();
+	glTranslatef(22.0, -17.3, 61.5);
+	glRotatef(-70.0F, 1.0, 0.0, 0.0);
+	glRotatef(70.0F, 0.0, 0.0, 1.0);
+	glScalef(-5.0, -20.0, -5.0);
+	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(59, -25, 73);
+	glRotatef(-64, 1.0, 0.0, 0.0);
+	glRotatef(7, 0.0, 1.0, 0.0);
+	glRotatef(70, 0.0, 0.0, 1.0);
+	glScalef(-5.0, -20.0, -5.0);
+	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(90,-27,56);
+	glRotatef(-82, 1.0, 0.0, 0.0);
+	glRotatef(7, 0.0, 1.0, 0.0);
+	glRotatef(-19, 0.0, 0.0, 1.0);
+	glScalef(-5.0, -20.0, -5.0);
+	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(93, -26, 16);
+	glRotatef(-93, 1.0, 0.0, 0.0);
+	glRotatef(0, 0.0, 1.0, 0.0);
+	glRotatef(10, 0.0, 0.0, 1.0);
+	glScalef(-5.0, -20.0, -5.0);
+	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(69, -31, -15);
+	glRotatef(-100, 1.0, 0.0, 0.0);
+	glRotatef(-4, 0.0, 1.0, 0.0);
+	glRotatef(67, 0.0, 0.0, 1.0);
+	glScalef(-5.0, -20.0, -5.0);
+	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glPopMatrix();
+
+
+
+	glPushMatrix();
+	glTranslatef(dx, dy, dz);
+	glRotatef(rpx, 1.0, 0.0, 0.0);
+	glRotatef(rpy, 0.0, 1.0, 0.0);
+	glRotatef(rpz, 0.0, 0.0, 1.0);
+	glScalef(-5.0, -20.0, -5.0);
+	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glPopMatrix();
+	
+
+}
+
+
 /* Scene dessinee                               */
 static void scene(void) {
-	/*glPushMatrix();
+	glPushMatrix();
 	myLuge();
 	startPlateforme();
 	stopPlateforme();
-	glPopMatrix();*/
+	glPopMatrix();
 
-	//Pos3D p = new Pos3D(4.0,5.0,6.0);
-	//vertex(&p, 5, 1.0);
-
-
-	//BSpline(nbPointsPos, tPos, CATMULL_ROM, 100, GL_LINE_STRIP);
-
-	bicubiquePatch(30, NRUBS, NRUBS, points);
-
-	//BSpline(nbPointsPos, tPos, CATMULL_ROM, 100, GL_LINE_STRIP);
-
-	//bezier(nbPointsPos, tPos, 100, GL_LINE_STRIP);
+	glPushMatrix();
+	pisteLuge();
+	glPopMatrix();
 
 }
 
@@ -886,38 +1010,106 @@ static void keyboard(unsigned char key, int x, int y) {
 		}
 		break;
 	case 0x7A: //z
-		py += 0.1;
+		//py += 0.1;
+		py += 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x73: //s
-		py -= 0.1;
+		//py -= 0.1;
+		py -= 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x71: //q
-		px -= 0.1;
+		//px -= 0.1;
+		px -= 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x64://d
-		px += 0.1;
+		//px += 0.1;
+		px += 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x61://a
-		pz -= 0.1;
+		//pz -= 0.1;
+		pz -= 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x65://e
-		pz += 0.1;
+		//pz += 0.1;
+		pz += 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x62: //b
-		px = 0.0;
-		py = 0.0;
-		pz = 20.0;
-		rx = 0.0;
-		ry = 0.0;
-		rz = 0.0;
+		printf("px %f, py %f, pz %f, rx %f, ry %f, rz %f\n", px, py, pz, rx, ry, rz);
 		glutPostRedisplay();
 		break;
+
+	case 't': //b
+		dx++;
+		//printf("dx++ %d\n",dx);
+		glutPostRedisplay();
+		break;
+	case 'g': //b
+		dx--;
+		//printf("dx-- %d\n",dx);
+		glutPostRedisplay();
+		break;
+	case 'y': //b
+		dy++;
+		//printf("dy %d\n", dy);
+		glutPostRedisplay();
+		break;
+	case 'h': //b
+		dy--;
+		//printf("dy-- %d",dy);
+		glutPostRedisplay();
+		break;
+	case 'u': //b
+		dz++;
+		//printf("dz++ %d", dz);
+		glutPostRedisplay();
+		break;
+	case 'j': //b
+		dz--;
+		//printf("dz-- %d", dz);
+		glutPostRedisplay();
+
+
+	case 'i': //b
+		rpx++;
+		//printf("rpx++ %d\n", rpx);
+		glutPostRedisplay();
+		break;
+	case 'k': //b
+		rpx--;
+		//printf("rpx-- %d\n", rpx);
+		glutPostRedisplay();
+		break;
+	case 'o': //b
+		rpy++;
+		//printf("rpy %d\n", rpy);
+		glutPostRedisplay();
+		break;
+	case 'l': //b
+		rpy--;
+		//printf("rpy-- %d", rpy);
+		glutPostRedisplay();
+		break;
+	case 'p': //b
+		rpz++;
+		//printf("rpz++ %d", rpz);
+		glutPostRedisplay();
+		break;
+	case 'm': //b
+		rpz--;
+		//printf("rpz-- %d", rpz);
+		glutPostRedisplay();
+
+	case 'v': //b
+		printf("dx %f | dy %f | de %f | rpx %f | rpy %f |rpz %f\n", dx,dy,dz,rpx,rpy,rpz);
+		glutPostRedisplay();
+
+
 	}
 }
 
@@ -930,29 +1122,68 @@ static void special(int key, int x, int y) {
 	//printf("M  %4d %4d %4d\n", key, x, y);
 	switch (key) {
 	case GLUT_KEY_UP:
-		rx++;
+		rx+=2.0;
 		glutPostRedisplay();
 		break;
 	case GLUT_KEY_DOWN:
-		rx--;
+		rx-=2.0;
 		glutPostRedisplay();
 		break;
 	case GLUT_KEY_LEFT:
-		ry++;
+		ry+=2.0;
 		glutPostRedisplay();
 		break;
 	case GLUT_KEY_RIGHT:
-		ry--;
+		ry-=2.0;
 		glutPostRedisplay();
 		break;
 	case GLUT_KEY_PAGE_UP:
-		rz++;
+		rz+=2.0;
 		glutPostRedisplay();
 		break;
 	case GLUT_KEY_PAGE_DOWN:
-		rz--;
+		rz-=2.0;
 		glutPostRedisplay();
 		break;
+
+	case GLUT_KEY_F1:
+		px = 7.0;
+		py = 23.0;
+		pz = -32.0;
+		rx = 44.0;
+		ry = 152.0;
+		rz = 0.0;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_F2:
+		px = 37.0;
+		py = -26.0;
+		pz = -65.0;
+		rx = 0.0;
+		ry = 166.0;
+		rz = 0.0;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_F3:
+		px = 103.0;
+		py = 25.0;
+		pz = 101.0;
+		rx = 30.0;
+		ry = 336.0;
+		rz = 0.0;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_F4:
+		px = 0.0;
+		py = 6.0;
+		pz = 3.0;
+		rx = 4.0;
+		ry = -182.0;
+		rz = 0.0;
+		glutPostRedisplay();
+		break;
+
+
 	}
 }
 
