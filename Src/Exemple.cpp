@@ -723,14 +723,6 @@ static GLfloat pts[16][3] = {
 
 
 
-
-/*static GLfloat crbs[16][3] = {
-	{-3.0F,-3.0F,-5.0F },{-1.0F,-3.0F,1.0F},{1.0F,-3.0F,1.0F },{3.0F,-3.0F,-5.0F },
-	{-5.0F,-1.0F,-5.0F},{-3.0F,-1.0F,1.0F},{-1.0F,-1.0F,1.0F},{1.0F,-1.0F,-5.0F },
-	{-5.0F,1.0F,-5.0F},{-3.0F,1.0F,1.0F},{-1.0F,1.0F,1.0F},{1.0F,1.0F,-5.0F },
-	{-3.0F,3.0F,-5.0F},{-1.0F,3.0F,1.0F},{1.0F,3.0F,1.0F},{3.0F,3.0F,-5.0F}
-};*/
-
 static GLfloat crbs[16][3] = {
 	{-3.0F,-3.0F,-3.0F },{-1.0F,-3.0F,1.0F},{1.0F,-3.0F,1.0F },{3.0F,-3.0F,-3.0F },
 	{-3.0F,-1.0F,-3.0F},{-3.0F,-1.0F,1.0F},{-1.0F,-1.0F,1.0F},{1.0F,-1.0F,-3.0F },
@@ -771,10 +763,12 @@ static void init(void) {
 
 static void pisteLuge() {
 	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
 	glTranslatef(0.0, -6.5, 32.0);
 	glRotatef(-70.0F,1.0,0.0,0.0);
 	glScalef(-5.0,-20.0,-5.0);
 	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
 	/*glPushMatrix();
@@ -784,61 +778,84 @@ static void pisteLuge() {
 	glRotatef(6.0F, 0.0, 0.0, 1.0);
 	glScalef(-5.0, -5.0, -5.0);
 	bicubiquePatch(30, NRUBS, NRUBS, courbe);
-	glPopMatrix();*/
+	glPopMatrix();
+	
+	glEnable(GL_TEXTURE_2D);
+	glPushMatrix();
+	glTranslatef(0.0F, -3.0F, 0.0F);
+	glScalef(10.0F, 0.5F, 25.0F);
+	mySolidCube(1.0F);
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
+	
+	
+	*/
 
 	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
 	glTranslatef(22.0, -17.3, 61.5);
 	glRotatef(-70.0F, 1.0, 0.0, 0.0);
 	glRotatef(70.0F, 0.0, 0.0, 1.0);
 	glScalef(-5.0, -20.0, -5.0);
 	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
 	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
 	glTranslatef(59, -25, 73);
 	glRotatef(-64, 1.0, 0.0, 0.0);
 	glRotatef(7, 0.0, 1.0, 0.0);
 	glRotatef(70, 0.0, 0.0, 1.0);
 	glScalef(-5.0, -20.0, -5.0);
 	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
 	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
 	glTranslatef(90,-27,56);
 	glRotatef(-82, 1.0, 0.0, 0.0);
 	glRotatef(7, 0.0, 1.0, 0.0);
 	glRotatef(-19, 0.0, 0.0, 1.0);
 	glScalef(-5.0, -20.0, -5.0);
 	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
 	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
 	glTranslatef(93, -26, 16);
 	glRotatef(-93, 1.0, 0.0, 0.0);
 	glRotatef(0, 0.0, 1.0, 0.0);
 	glRotatef(10, 0.0, 0.0, 1.0);
 	glScalef(-5.0, -20.0, -5.0);
 	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
 	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
 	glTranslatef(69, -31, -15);
 	glRotatef(-100, 1.0, 0.0, 0.0);
 	glRotatef(-4, 0.0, 1.0, 0.0);
 	glRotatef(67, 0.0, 0.0, 1.0);
 	glScalef(-5.0, -20.0, -5.0);
 	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
 
 
 	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
 	glTranslatef(dx, dy, dz);
 	glRotatef(rpx, 1.0, 0.0, 0.0);
 	glRotatef(rpy, 0.0, 1.0, 0.0);
 	glRotatef(rpz, 0.0, 0.0, 1.0);
 	glScalef(-5.0, -20.0, -5.0);
 	bicubiquePatch(30, NRUBS, NRUBS, points);
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 	
 
