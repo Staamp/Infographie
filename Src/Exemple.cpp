@@ -71,17 +71,6 @@ static float rpz = 10.0;				// pour les cameras et glutlookat
 
 
 
-
-
-
-
-
-
-
-
-
-static int nbPoints = 10;
-
 static float NRUBS[4][4] = { { -1.0 / 6.0,  3.0 / 6.0, -3.0 / 6.0,  1.0 / 6.0 },
 							  {  3.0 / 6.0, -6.0 / 6.0,  3.0 / 6.0,        0.0 },
 							  { -3.0 / 6.0,		   0.0,  3.0 / 6.0,        0.0 },
@@ -97,42 +86,12 @@ static float CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 
 
 
 
-static int nbPointsPos1 = 18;
-static Pos3D* tPos1[] = { new Pos3D(6.5F, 4.9F,-3.00F), new Pos3D(7.0F, 5.0F,-3.00F), new Pos3D(7.5F, 4.9F,-2.00F),
-						 new Pos3D(8.0F, 4.6F, 0.00F), new Pos3D(7.5F, 4.4F, 2.00F), new Pos3D(7.0F, 4.2F, 3.50F),
-						 new Pos3D(6.0F, 3.8F, 4.00F), new Pos3D(5.0F, 2.8F, 4.00F), new Pos3D(4.0F, 1.8F, 4.00F),
-						 new Pos3D(3.0F, 0.8F, 4.00F), new Pos3D(0.0F, 0.0F, 4.00F), new Pos3D(-1.4F, 0.7F, 3.75F),
-						 new Pos3D(-2.0F, 2.0F, 3.50F), new Pos3D(-1.4F, 3.3F, 3.25F), new Pos3D(0.0F, 4.0F, 3.00F),
-						 new Pos3D(1.4F, 3.3F, 2.75F), new Pos3D(2.0F, 2.0F, 2.50F), new Pos3D(1.0F, 0.7F, 2.25F), };
 
-
-
-static int nbPointsPos2 = 37;
-//									x     y    z
-static Pos3D* tPos2[] = { new Pos3D(0.0F, 0.0F, 1.0F), new Pos3D(1.0F, 0.0F, 3.0F), new Pos3D(1.0F, 0.0F, 5.0F),
-						 new Pos3D(1.0F, 0.0F, 1.0F), new Pos3D(2.0F, 0.0F, 3.0F), new Pos3D(2.0F, 0.0F, 5.0F),
-						 new Pos3D(2.0F, 0.0F, 1.0F), new Pos3D(3.0F, 0.0F, 3.0F), new Pos3D(3.0F, 0.0F, 5.0F),
-						 new Pos3D(3.0F, 0.0F, 1.0F), new Pos3D(4.0F, 0.0F, 3.0F), new Pos3D(4.0F, 0.0F, 5.0F),
-						 new Pos3D(4.0F, 0.0F, 1.0F), new Pos3D(5.0F, 0.0F, 3.0F), new Pos3D(5.0F, 0.0F, 5.0F),
-						 new Pos3D(5.0F, 0.0F, 1.0F), new Pos3D(6.0F, 0.0F, 3.0F), new Pos3D(6.0F, 0.0F, 5.0F),
-						 new Pos3D(6.0F, 0.0F, 1.0F), new Pos3D(1.0F, 0.0F, 4.0F), new Pos3D(1.0F, 0.0F, 6.0F),
-						 new Pos3D(1.0F, 0.0F, 2.0F), new Pos3D(2.0F, 0.0F, 4.0F), new Pos3D(2.0F, 0.0F, 6.0F),
-						 new Pos3D(2.0F, 0.0F, 2.0F), new Pos3D(3.0F, 0.0F, 4.0F), new Pos3D(3.0F, 0.0F, 6.0F),
-						 new Pos3D(3.0F, 0.0F, 2.0F), new Pos3D(4.0F, 0.0F, 4.0F), new Pos3D(4.0F, 0.0F, 6.0F),
-						 new Pos3D(4.0F, 0.0F, 2.0F), new Pos3D(5.0F, 0.0F, 4.0F), new Pos3D(5.0F, 0.0F, 6.0F),
-						 new Pos3D(5.0F, 0.0F, 2.0F), new Pos3D(6.0F, 0.0F, 4.0F), new Pos3D(6.0F, 0.0F, 6.0F),
-						 new Pos3D(6.0F, 0.0F, 2.0F) };
-
-
-static int nbPointsPos = 16;
-static Pos3D* tPos[] = { new Pos3D(-3.0F,-3.0F,-1.0F), new Pos3D(-1.0F,-3.0F,1.0F), new Pos3D(1.0F,-3.0F,2.0F), new Pos3D(3.0F,-3.0F,-1.0F),
-						 new Pos3D(-3.0F,-1.0F,3.0F), new Pos3D(-1.0F,-1.0F,2.0F), new Pos3D(1.0F,-1.0F,-1.0F), new Pos3D(3.0F,-1.0F,1.0F),
-						 new Pos3D(-3.0F,1.0F,-1.0F), new Pos3D(-1.0F,1.0F,-1.0F), new Pos3D(1.0F,1.0F,1.0F), new Pos3D(3.0F,1.0F,-1.0F),
-						 new Pos3D(-3.0F,3.0F,-2.0F), new Pos3D(-1.0F,3.0F,1.0F), new Pos3D(1.0F,3.0F,1.0F), new Pos3D(3.0F,3.0F,1.0F) };
 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 
@@ -143,16 +102,6 @@ static void vertex(Pos3D* p, int couleur, double taille) {
 	glutSolidSphere(taille, 36, 18);
 	glPopMatrix();
 }
-
-
-
-
-
-
-
-
-
-
 
 
 /* Calcul la position d'un point sur une courbe  */
@@ -588,20 +537,6 @@ typedef struct coord_3D coord_3D;
 typedef float matrice[4][4];
 typedef float vecteur[4];
 
-/*
-static GLfloat pts[16][4] = {
-  { 0.0F, 0.0F, 1.0F, 1.0F },{ 0.0F, 2.0F, 1.0F, 1.0F },
-  { 0.0F, 0.0F, 2.0F, 1.0F },{ 0.0F, 2.0F, 2.0F, 1.0F },
-  { 0.0F, 0.0F, 3.0F, 1.0F },{ 0.0F, 2.0F, 3.0F, 1.0F },
-  { 0.0F, 0.0F, 4.0F, 1.0F },{ 0.0F, 2.0F, 4.0F, 1.0F },
-  { 0.0F, 1.0F, 1.0F, 1.0F },{ 0.0F, 3.0F, 1.0F, 1.0F },
-  { 0.0F, 1.0F, 2.0F, 1.0F },{ 0.0F, 3.0F, 2.0F, 1.0F },
-  { 0.0F, 1.0F, 3.0F, 1.0F },{ 0.0F, 3.0F, 3.0F, 1.0F },
-  { 0.0F, 1.0F, 4.0F, 1.0F },{ 0.0F, 3.0F, 4.0F, 1.0F } };*/
-
-
-
-
 
 void point(coord_3D* p, coord_3D* n, coord_3D* t) {
 	glTexCoord2f(t->x, t->y);
@@ -909,17 +844,27 @@ static void pisteLuge() {
 
 }
 
+static int nbp = 1000;
+static int nbPoints = 7;
+static Pos3D* tPos[] = { new Pos3D(0.0F, 0.0F,0.00F), 
+						 new Pos3D(0.0, -6.5, 32.0), 
+						 new Pos3D(22.0, -17.3, 61.5), 
+						 new Pos3D(59, -25, 73), 
+						 new Pos3D(90,-27,56), 
+						 new Pos3D(93, -26, 16), 
+						 new Pos3D(69, -31, -15),};
 
 /* Scene dessinee                               */
 static void scene(void) {
 	glPushMatrix();
 	myLuge();
 	startPlateforme();
-	stopPlateforme();
+	//stopPlateforme();
 	glPopMatrix();
 
 	glPushMatrix();
 	pisteLuge();
+	BSpline(nbPoints, tPos, NRUBS, nbp, GL_POINTS);
 	glPopMatrix();
 
 }
