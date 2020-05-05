@@ -306,18 +306,6 @@ void mySolidCube(double c) {
 	glEnd();
 }
 
-/* Platforme de lancement du boblseigh */
-void startPlateforme() {
-	glEnable(GL_TEXTURE_2D);
-	glPushMatrix();
-	glTranslatef(0.0F, -3.0F, 0.0F);
-	glScalef(10.0F, 0.5F, 25.0F);
-	mySolidCube(1.0F);
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
-
-}
-
 
 /* Fonction qui genere un cylindre	*/
 /* hauteur : la hauteur du cylindre */
