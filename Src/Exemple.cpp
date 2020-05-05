@@ -17,6 +17,7 @@
 
 #include "PNG/ChargePngFile.h"
 #include "Pos3D.h"
+#include "CH3D.h"
 
 #ifndef M_PI
 #define M_PI 3.14159
@@ -114,7 +115,7 @@ static void vertex(Pos3D* p, int couleur, double taille) {
 /* mb : la matrice de base                       */
 /* point : le point resultat                     */
 
-static void positionSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* point) {
+static void positionSurBSpline(CH3D** tPos, float t, float mb[4][4], CH3D* point) {
 	float vt[4] = { t * t * t,t * t,t,1.0F };
 	float vtmb[4] = { 0.0F,0.0F,0.0F,0.0F };
 	for (int j = 0; j < 4; j++) {
@@ -128,6 +129,7 @@ static void positionSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* poi
 		point->z += vtmb[j] * tPos[j]->z;
 	}
 }
+
 
 static void tangenteSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* point) {
 	float vt[4] = { 3 * t * t,2 * t,1.0F,0 };
@@ -172,6 +174,8 @@ static void BSpline(int nbPoints, Pos3D** tPos, Pos3D** tPos2, float mb[4][4], i
 
 
 
+
+static void BSpline(int nbPoints, CH3D** tPos, float mb[4][4], int n, GLenum typePrimitive) {
 	glBegin(typePrimitive);
 	for (int i = 0; i < n; i++) {
 		float t = i / (n - 1.0) * (nbPoints - 3);
@@ -324,8 +328,6 @@ void mySolidCube(double c) {
 	glVertex3d(-c, -c, -c); // 8 
 	glEnd();
 }
-
-
 
 /* Fonction qui genere un cylindre	*/
 /* hauteur : la hauteur du cylindre */
@@ -808,7 +810,7 @@ void stopPlateforme() {
 
 static int nbp = 100;
 static int nbPoints = 7;
-static Pos3D* tPos[] = { new Pos3D(0.0F, 0.0F,0.00F), 
+static CH3D* tPos[] = { new Pos3D(0.0F, 0.0F,0.00F), 
 						 new Pos3D(0.0, -6.5, 32.0), 
 						 new Pos3D(22.0, -17.3, 61.5), 
 						 new Pos3D(59, -25, 73), 
