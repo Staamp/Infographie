@@ -112,8 +112,24 @@ static void vertex(Pos3D* p, int couleur, double taille) {
 /* mb : la matrice de base                       */
 /* point : le point resultat                     */
 
+
 static void positionSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* point) {
 	float vt[4] = { t * t * t,t * t,t,1.0F };
+	float vtmb[4] = { 0.0F,0.0F,0.0F,0.0F };
+	for (int j = 0; j < 4; j++) {
+		for (int k = 0; k < 4; k++)
+			vtmb[j] += vt[k] * mb[k][j];
+	}
+	point->x = point->y = point->z = 0.0;
+	for (int j = 0; j < 4; j++) {
+		point->x += vtmb[j] * tPos[j]->x;
+		point->y += vtmb[j] * tPos[j]->y;
+		point->z += vtmb[j] * tPos[j]->z;
+	}
+}
+
+static void tangeanteSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* point) {
+	float vt[4] = { 3 * t * t,2 * t,1.0F,0 };
 	float vtmb[4] = { 0.0F,0.0F,0.0F,0.0F };
 	for (int j = 0; j < 4; j++) {
 		for (int k = 0; k < 4; k++)
@@ -287,27 +303,7 @@ void mySolidCube(double c) {
 	glEnd();
 }
 
-/* Platforme de lancement du boblseigh */
-void startPlateforme() {
-	glEnable(GL_TEXTURE_2D);
-	glPushMatrix();
-	glTranslatef(0.0F, -3.0F, 0.0F);
-	glScalef(10.0F, 0.5F, 25.0F);
-	mySolidCube(1.0F);
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
-}
 
-/* Platforme de lancement du boblseigh */
-void stopPlateforme() {
-	glEnable(GL_TEXTURE_2D);
-	glPushMatrix();
-	glTranslatef(500.0F, -300.0F, 0.0F);
-	glScalef(30.0F, 0.5F, 100.0F);
-	mySolidCube(1.0F);
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
-}
 
 /* Fonction qui genere un cylindre	*/
 /* hauteur : la hauteur du cylindre */
@@ -488,6 +484,8 @@ static void myLuge() {
 	glPopMatrix();
 }
 
+
+
 static void bezier(int nbPoints, Pos3D** tPos, int n, GLenum typePrimitive) {
 	float t, mt;
 	float x, y, z, fac;
@@ -536,6 +534,19 @@ struct coord_3D {
 typedef struct coord_3D coord_3D;
 typedef float matrice[4][4];
 typedef float vecteur[4];
+
+
+static GLfloat pts[16][3] = {
+	{-3.0F,-3.0F,-1.0F },{-1.0F,-3.0F,1.0F},{1.0F,-3.0F,1.0F },{3.0F,-3.0F,-1.0F },
+	{-3.0F,-1.0F,-1.0F},{-1.0F,-1.0F,-1.0F},{1.0F,-1.0F,1.0F},{3.0F,-1.0F,-1.0F },
+	{-3.0F,1.0F,-1.0F},{-1.0F,1.0F,1.0F},{1.0F,1.0F,1.0F},{3.0F,1.0F,-1.0F },
+	{-3.0F,3.0F,-1.0F},{-1.0F,3.0F,1.0F},{1.0F,3.0F,1.0F},{3.0F,3.0F,-1.0F}
+};
+
+static coord_3D* points = (coord_3D*)pts;
+
+
+
 
 
 void point(coord_3D* p, coord_3D* n, coord_3D* t) {
@@ -714,14 +725,6 @@ static matrice bezierMAT =
    1.0F, 0.0F, 0.0F, 0.0F };
 
 
-static GLfloat pts[16][3] = {
-	{-3.0F,-3.0F,-3.0F },{-1.0F,-3.0F,1.0F},{1.0F,-3.0F,1.0F },{3.0F,-3.0F,-3.0F },
-	{-3.0F,-1.0F,-3.0F},{-1.0F,-1.0F,1.0F},{1.0F,-1.0F,1.0F},{3.0F,-1.0F,-3.0F },
-	{-3.0F,1.0F,-3.0F},{-1.0F,1.0F,1.0F},{1.0F,1.0F,1.0F},{3.0F,1.0F,-3.0F },
-	{-3.0F,3.0F,-3.0F},{-1.0F,3.0F,1.0F},{1.0F,3.0F,1.0F},{3.0F,3.0F,-3.0F}
-};
-
-
 
 static GLfloat crbs[16][3] = {
 	{-3.0F,-3.0F,-3.0F },{-1.0F,-3.0F,1.0F},{1.0F,-3.0F,1.0F },{3.0F,-3.0F,-3.0F },
@@ -731,7 +734,6 @@ static GLfloat crbs[16][3] = {
 };
 
 
-static coord_3D* points = (coord_3D*)pts;
 
 static coord_3D* courbe = (coord_3D*)crbs;
 
@@ -760,6 +762,26 @@ static void init(void) {
 }
 
 
+/* Platforme de lancement du boblseigh */
+void startPlateforme() {
+	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glTranslatef(0.0F, -3.0F, 0.0F);
+	myRectangle(0.5F, 10.0F, 25.0F);
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
+}
+
+/* Platforme de lancement du boblseigh */
+void stopPlateforme() {
+	glEnable(GL_TEXTURE_2D);
+	glPushMatrix();
+	glTranslatef(500.0F, -300.0F, 0.0F);
+	glScalef(30.0F, 0.5F, 100.0F);
+	mySolidCube(1.0F);
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
+}
 
 static void pisteLuge() {
 	glPushMatrix();
@@ -845,8 +867,6 @@ static void pisteLuge() {
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
-
-
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(dx, dy, dz);
@@ -857,8 +877,6 @@ static void pisteLuge() {
 	bicubiquePatch(30, NRUBS, NRUBS, points);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
-	
-
 }
 
 static int nbp = 1000;
@@ -957,7 +975,8 @@ static void keyboard(unsigned char key, int x, int y) {
 	case 0x1B:	//echape	
 		exit(0);
 		break;
-	case 0x66:	//f minuscule
+	case 0x66:
+	case 'F':	//f minuscule
 		if (!isLine) {
 			printf("Passe en mode fil de fer\n");
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -971,38 +990,44 @@ static void keyboard(unsigned char key, int x, int y) {
 			glutPostRedisplay();
 		}
 		break;
-	case 0x7A: //z
-		//py += 0.1;
-		py += 1.0;
+	case 0x7A:
+	case 'Z' ://z
+		py += 0.1;
 		glutPostRedisplay();
 		break;
-	case 0x73: //s
-		//py -= 0.1;
-		py -= 1.0;
+	case 0x73:
+	case 'S' ://s
+		py -= 0.1;
 		glutPostRedisplay();
 		break;
-	case 0x71: //q
-		//px -= 0.1;
-		px -= 1.0;
+	case 0x71:
+	case 'Q' ://q
+		px -= 0.1;
 		glutPostRedisplay();
 		break;
-	case 0x64://d
-		//px += 0.1;
-		px += 1.0;
+	case 0x64:
+	case 'D' ://d
+		px += 0.1;
 		glutPostRedisplay();
 		break;
-	case 0x61://a
-		//pz -= 0.1;
-		pz -= 1.0;
+	case 0x61:
+	case 'A' ://a
+		pz -= 0.1;
 		glutPostRedisplay();
 		break;
 	case 0x65://e
-		//pz += 0.1;
-		pz += 1.0;
+	case 'E':
+		pz += 0.1;
 		glutPostRedisplay();
 		break;
 	case 0x62: //b
-		printf("px %f, py %f, pz %f, rx %f, ry %f, rz %f\n", px, py, pz, rx, ry, rz);
+	case 'B':
+		px = 0.0;
+		py = 0.0;
+		pz = 20.0;
+		rx = 0.0;
+		ry = 0.0;
+		rz = 0.0;
 		glutPostRedisplay();
 		break;
 
