@@ -129,7 +129,7 @@ static void positionSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* poi
 	}
 }
 
-static void tangeanteSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* point) {
+static void tangenteSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* point) {
 	float vt[4] = { 3 * t * t,2 * t,1.0F,0 };
 	float vtmb[4] = { 0.0F,0.0F,0.0F,0.0F };
 	for (int j = 0; j < 4; j++) {
@@ -144,6 +144,19 @@ static void tangeanteSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* po
 	}
 }
 
+
+void ligneTangente(float x, float y, float z, float vx, float vy, float vz) {
+	printf("lt\n");
+	printf("%f %f %f\n", x, y, z);
+	glBegin(GL_LINES);
+	glTranslatef(x, y, z);
+	glVertex3f(x, y, z);
+	glVertex3f(vx, vy, vz);
+	glEnd();
+
+	
+}
+
 /* Modelise une courbe B-Spline par morceaux     */
 /* definie par un ensemble de points de controle */
 /* nbPoints : le nombre de points de contrôle    */
@@ -152,7 +165,13 @@ static void tangeanteSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* po
 /* n : le nombre de points a calculer            */
 /* typePrimitive : le type de primitive OpenGL   */
 /*                 a utiliser                    */
-static void BSpline(int nbPoints, Pos3D** tPos, float mb[4][4], int n, GLenum typePrimitive) {
+static void BSpline(int nbPoints, Pos3D** tPos, Pos3D** tPos2, float mb[4][4], int n, GLenum typePrimitive) {
+	n = 500;
+	Pos3D pts[500];
+	Pos3D tan[500];
+
+
+
 	glBegin(typePrimitive);
 	for (int i = 0; i < n; i++) {
 		float t = i / (n - 1.0) * (nbPoints - 3);
@@ -160,11 +179,28 @@ static void BSpline(int nbPoints, Pos3D** tPos, float mb[4][4], int n, GLenum ty
 		if (nb == nbPoints - 3)
 			nb = nbPoints - 4;
 		Pos3D point;
+		Pos3D tgt;
 		positionSurBSpline(&tPos[nb], t - nb, mb, &point);
-		tangeanteSurBSpline(&tPos[nb], t - nb, mb, &point);
 		glVertex3f(point.x, point.y, point.z);
+		tangenteSurBSpline(&tPos2[nb], t - nb, mb, &tgt);
+		glVertex3f(tgt.x, tgt.y, tgt.z);
+
+		pts[i] = point;
+		tan[i] = tgt;
 	}
 	glEnd();
+
+	for (int i = 0; i < n; i++) {
+		float d = sqrt(tan[i].x * tan[i].x + tan[i].y * tan[i].y + tan[i].z * tan[i].z);
+		float vx = pts[i].x + tan[i].x / d;
+		float vy = pts[i].y + tan[i].y / d;
+		float vz = pts[i].z + tan[i].z / d;
+		printf("%f %f %f\n", tan[i].x, tan[i].y, tan[i].z);
+		//printf("%f %f %f\n", pts[i].x, pts[i].y, pts[i].z);
+		ligneTangente(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz);
+	}
+
+
 }
 
 /* Fonction d'initialisation des parametres     */
@@ -769,103 +805,8 @@ void stopPlateforme() {
 	glDisable(GL_TEXTURE_2D);
 }
 
-static void pisteLuge() {
-	glPushMatrix();
-	glEnable(GL_TEXTURE_2D);
-	glTranslatef(0.0, -6.5, 32.0);
-	glRotatef(-70.0F,1.0,0.0,0.0);
-	glScalef(-5.0,-20.0,-5.0);
-	bicubiquePatch(30, NRUBS, NRUBS, points);
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
 
-	/*glPushMatrix();
-	glTranslatef(8.5, -15.0, 54.0);
-	glRotatef(180.0F, 0.0, 0.0, -1.0);
-	glRotatef(72.0F, 45.0, 0.0, 0.0);
-	glRotatef(6.0F, 0.0, 0.0, 1.0);
-	glScalef(-5.0, -5.0, -5.0);
-	bicubiquePatch(30, NRUBS, NRUBS, courbe);
-	glPopMatrix();
-	
-	glEnable(GL_TEXTURE_2D);
-	glPushMatrix();
-	glTranslatef(0.0F, -3.0F, 0.0F);
-	glScalef(10.0F, 0.5F, 25.0F);
-	mySolidCube(1.0F);
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
-	
-	
-	*/
-
-	glPushMatrix();
-	glEnable(GL_TEXTURE_2D);
-	glTranslatef(22.0, -17.3, 61.5);
-	glRotatef(-70.0F, 1.0, 0.0, 0.0);
-	glRotatef(70.0F, 0.0, 0.0, 1.0);
-	glScalef(-5.0, -20.0, -5.0);
-	bicubiquePatch(30, NRUBS, NRUBS, points);
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
-
-	glPushMatrix();
-	glEnable(GL_TEXTURE_2D);
-	glTranslatef(59, -25, 73);
-	glRotatef(-64, 1.0, 0.0, 0.0);
-	glRotatef(7, 0.0, 1.0, 0.0);
-	glRotatef(70, 0.0, 0.0, 1.0);
-	glScalef(-5.0, -20.0, -5.0);
-	bicubiquePatch(30, NRUBS, NRUBS, points);
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
-
-	glPushMatrix();
-	glEnable(GL_TEXTURE_2D);
-	glTranslatef(90,-27,56);
-	glRotatef(-82, 1.0, 0.0, 0.0);
-	glRotatef(7, 0.0, 1.0, 0.0);
-	glRotatef(-19, 0.0, 0.0, 1.0);
-	glScalef(-5.0, -20.0, -5.0);
-	bicubiquePatch(30, NRUBS, NRUBS, points);
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
-
-	glPushMatrix();
-	glEnable(GL_TEXTURE_2D);
-	glTranslatef(93, -26, 16);
-	glRotatef(-93, 1.0, 0.0, 0.0);
-	glRotatef(0, 0.0, 1.0, 0.0);
-	glRotatef(10, 0.0, 0.0, 1.0);
-	glScalef(-5.0, -20.0, -5.0);
-	bicubiquePatch(30, NRUBS, NRUBS, points);
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
-
-	glPushMatrix();
-	glEnable(GL_TEXTURE_2D);
-	glTranslatef(69, -31, -15);
-	glRotatef(-100, 1.0, 0.0, 0.0);
-	glRotatef(-4, 0.0, 1.0, 0.0);
-	glRotatef(67, 0.0, 0.0, 1.0);
-	glScalef(-5.0, -20.0, -5.0);
-	bicubiquePatch(30, NRUBS, NRUBS, points);
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
-
-	glPushMatrix();
-	glEnable(GL_TEXTURE_2D);
-	glTranslatef(dx, dy, dz);
-	glRotatef(rpx, 1.0, 0.0, 0.0);
-	glRotatef(rpy, 0.0, 1.0, 0.0);
-	glRotatef(rpz, 0.0, 0.0, 1.0);
-	glScalef(-5.0, -20.0, -5.0);
-	bicubiquePatch(30, NRUBS, NRUBS, points);
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
-}
-
-static int nbp = 1000;
+static int nbp = 100;
 static int nbPoints = 7;
 static Pos3D* tPos[] = { new Pos3D(0.0F, 0.0F,0.00F), 
 						 new Pos3D(0.0, -6.5, 32.0), 
@@ -877,15 +818,15 @@ static Pos3D* tPos[] = { new Pos3D(0.0F, 0.0F,0.00F),
 
 /* Scene dessinee                               */
 static void scene(void) {
-	glPushMatrix();
-	myLuge();
-	startPlateforme();
+	//glPushMatrix();
+	//myLuge();
+	//startPlateforme();
 	//stopPlateforme();
-	glPopMatrix();
+	//glPopMatrix();
 
 	glPushMatrix();
 	//pisteLuge();
-	BSpline(nbPoints, tPos, NRUBS, nbp, GL_POINTS);
+	BSpline(nbPoints, tPos, tPos, NRUBS, nbp, GL_POINTS);
 	glPopMatrix();
 
 }
