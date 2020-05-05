@@ -152,7 +152,6 @@ static void tangeanteSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* po
 /* n : le nombre de points a calculer            */
 /* typePrimitive : le type de primitive OpenGL   */
 /*                 a utiliser                    */
-
 static void BSpline(int nbPoints, Pos3D** tPos, float mb[4][4], int n, GLenum typePrimitive) {
 	glBegin(typePrimitive);
 	for (int i = 0; i < n; i++) {
@@ -162,25 +161,11 @@ static void BSpline(int nbPoints, Pos3D** tPos, float mb[4][4], int n, GLenum ty
 			nb = nbPoints - 4;
 		Pos3D point;
 		positionSurBSpline(&tPos[nb], t - nb, mb, &point);
+		tangeanteSurBSpline(&tPos[nb], t - nb, mb, &point);
 		glVertex3f(point.x, point.y, point.z);
 	}
 	glEnd();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Fonction d'initialisation des parametres     */
 /* OpenGL ne changeant pas au cours de la vie   */
@@ -304,17 +289,6 @@ void mySolidCube(double c) {
 	glEnd();
 }
 
-/* Platforme de lancement du boblseigh */
-void startPlateforme() {
-	glEnable(GL_TEXTURE_2D);
-	glPushMatrix();
-	glTranslatef(0.0F, -3.0F, 0.0F);
-	glScalef(10.0F, 0.5F, 25.0F);
-	mySolidCube(1.0F);
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
-
-}
 
 
 /* Fonction qui genere un cylindre	*/
@@ -910,7 +884,7 @@ static void scene(void) {
 	glPopMatrix();
 
 	glPushMatrix();
-	pisteLuge();
+	//pisteLuge();
 	BSpline(nbPoints, tPos, NRUBS, nbp, GL_POINTS);
 	glPopMatrix();
 
@@ -1004,32 +978,32 @@ static void keyboard(unsigned char key, int x, int y) {
 		break;
 	case 0x7A:
 	case 'Z' ://z
-		py += 0.1;
+		py += 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x73:
 	case 'S' ://s
-		py -= 0.1;
+		py -= 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x71:
 	case 'Q' ://q
-		px -= 0.1;
+		px -= 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x64:
 	case 'D' ://d
-		px += 0.1;
+		px += 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x61:
 	case 'A' ://a
-		pz -= 0.1;
+		pz -= 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x65://e
 	case 'E':
-		pz += 0.1;
+		pz += 1.0;
 		glutPostRedisplay();
 		break;
 	case 0x62: //b
