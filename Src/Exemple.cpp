@@ -131,7 +131,7 @@ static void positionSurBSpline(CH3D** tPos, float t, float mb[4][4], CH3D* point
 }
 
 
-static void tangenteSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* point) {
+static void tangenteSurBSpline(CH3D** tPos, float t, float mb[4][4], Pos3D* point) {
 	float vt[4] = { 3 * t * t,2 * t,1.0F,0 };
 	float vtmb[4] = { 0.0F,0.0F,0.0F,0.0F };
 	for (int j = 0; j < 4; j++) {
@@ -167,15 +167,14 @@ void ligneTangente(float x, float y, float z, float vx, float vy, float vz) {
 /* n : le nombre de points a calculer            */
 /* typePrimitive : le type de primitive OpenGL   */
 /*                 a utiliser                    */
-static void BSpline(int nbPoints, Pos3D** tPos, Pos3D** tPos2, float mb[4][4], int n, GLenum typePrimitive) {
+
+
+
+static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int n, GLenum typePrimitive) {
 	n = 500;
 	Pos3D pts[500];
 	Pos3D tan[500];
 
-
-
-
-static void BSpline(int nbPoints, CH3D** tPos, float mb[4][4], int n, GLenum typePrimitive) {
 	glBegin(typePrimitive);
 	for (int i = 0; i < n; i++) {
 		float t = i / (n - 1.0) * (nbPoints - 3);
@@ -817,6 +816,13 @@ static CH3D* tPos[] = { new Pos3D(0.0F, 0.0F,0.00F),
 						 new Pos3D(90,-27,56), 
 						 new Pos3D(93, -26, 16), 
 						 new Pos3D(69, -31, -15),};
+static CH3D* tPosT[] = { new Pos3D(0.0F, 0.0F,0.00F),
+						 new Pos3D(0.0, -6.5, 32.0),
+						 new Pos3D(22.0, -17.3, 61.5),
+						 new Pos3D(59, -25, 73),
+						 new Pos3D(90,-27,56),
+						 new Pos3D(93, -26, 16),
+						 new Pos3D(69, -31, -15), };
 
 /* Scene dessinee                               */
 static void scene(void) {
