@@ -39,13 +39,13 @@ static int wTy = 480;					// Resolution verticale de la fenetre
 static int wPx = 50;					// Position horizontale de la fenetre
 static int wPy = 50;					// Position verticale de la fenetre
 
-static float rx = 0.0F;					// Rotation en x
-static float ry = 0.0F;					// Rotation en y
+static float rx = 4.0F;					// Rotation en x
+static float ry = -182.0F;					// Rotation en y
 static float rz = 0.0F;					// Rotation en z
 
 static float px = 0.0;					// pour les cameras et glutlookat
-static float py = 0.0;					// pour les cameras et glutlookat
-static float pz = 10.0;				// pour les cameras et glutlookat
+static float py = 6.0;					// pour les cameras et glutlookat
+static float pz = 3.0;				// pour les cameras et glutlookat
 static int versionCamera = 0;			//changer le type de camera
 
 static int isLine = 0;					// Affichage fil de fer
@@ -104,6 +104,8 @@ static void vertex(Pos3D* p, int couleur, double taille) {
 }
 
 
+
+
 /* Calcul la position d'un point sur une courbe  */
 /* B-Spline controlee par quatre points          */
 /* tPos : le tableau des 4 points de controle    */
@@ -111,7 +113,6 @@ static void vertex(Pos3D* p, int couleur, double taille) {
 /*     t a prendre dans l'intervalle [0.0,1.0]   */
 /* mb : la matrice de base                       */
 /* point : le point resultat                     */
-
 static void positionSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* point) {
 	float vt[4] = { t * t * t,t * t,t,1.0F };
 	float vtmb[4] = { 0.0F,0.0F,0.0F,0.0F };
@@ -296,6 +297,7 @@ void startPlateforme() {
 	mySolidCube(1.0F);
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
+
 }
 
 /* Platforme de lancement du boblseigh */
@@ -356,7 +358,7 @@ static void myRectangle(double h, double l, double lo) {
 	glVertex3d(-l, -h, lo); // 3 
 	glVertex3d(l, -h, lo); //4 
 
-	glNormal3f(0.0F, h, 0.0F);
+	glNormal3f(0.0F, 1.0F, 0.0F);
 	glVertex3d(l, h, lo); // 1 
 	glVertex3d(l, h, -lo); // 5 
 	glVertex3d(-l, h, -lo); // 6 
