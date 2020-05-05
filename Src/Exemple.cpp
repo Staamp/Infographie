@@ -114,7 +114,7 @@ static void vertex(Pos3D* p, int couleur, double taille) {
 /* mb : la matrice de base                       */
 /* point : le point resultat                     */
 
-static void positionSurBSpline(Pos3D** tPos, float t, float mb[4][4], Pos3D* point) {
+static void positionSurBSpline(CH3D** tPos, float t, float mb[4][4], Pos3D* point) {
 	float vt[4] = { t * t * t,t * t,t,1.0F };
 	float vtmb[4] = { 0.0F,0.0F,0.0F,0.0F };
 	for (int j = 0; j < 4; j++) {
