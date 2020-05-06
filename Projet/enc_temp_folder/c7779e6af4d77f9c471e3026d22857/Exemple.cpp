@@ -151,18 +151,6 @@ static void tangenteSurBSpline(CH3D** tPos, float t, float mb[4][4], Pos3D* poin
 
 }
 
-static void produitVectorielle(Pos3D p1, Pos3D p2, Pos3D pRes) {
-	float x = p1.x - p2.x;
-	float y = p1.y - p2.y;
-	float z = p1.z - p2.z;
-	pRes.x = x;
-	pRes.y = y;
-	pRes.z = z;
-}
-
-static float produitScalaire(Pos3D p1, Pos3D p2) {
-	return p1.x * p2.x + p1.y * p2.y + p1.z * p2.z;
-}
 
 
 static void calculNormal(float x, float y, float z, float tx, float ty, float tz) {
@@ -792,37 +780,22 @@ void stopPlateforme() {
 
 
 static int nbp = 100;
-static int nbPoints = 18;
-static CH3D* tPosT[] = { new Pos3D(0.0F , 15.0F ,-50.0F ),
-						 new Pos3D(0 , -3 ,10 ),
-						 new Pos3D(0 , -9 , 30 ),
-						 new Pos3D(-3.0F , -12 , 48 ),
-						 new Pos3D(-30.0F ,-20 ,75 ),
-						 new Pos3D(30.0F , -27 , 80 ),
-						 new Pos3D(30 , -32 , 90 ),
-						 new Pos3D(2.0F , -42 ,110 ),
-						 new Pos3D(-15.0F , -49 ,150 ),
-						 new Pos3D(-50.0F , -55 , 170 ),
-						 new Pos3D(-35 , -62 , 185 ),
-						 new Pos3D(-0 ,-67 ,200 ),
-						 new Pos3D(-12 , -71 , 225 ),
-						 new Pos3D(-15 , -73 , 240),
-						 new Pos3D(-30 , -74 ,250),
-						 new Pos3D(-30 , -75 ,265 ),
-						 new Pos3D(-30 , -69 , 285.0F ),
-						 new Pos3D(-30 , -50 , 350 ),
-};
-
-
+static int nbPoints = 7;
+static CH3D* tPosT[] = { new Pos3D(0.0F, 0.0F,0.00F),
+						 new Pos3D(0.0, -6.5, 32.0),
+						 new Pos3D(22.0, -17.3, 61.5),
+						 new Pos3D(59, -25, 73),
+						 new Pos3D(90,-27,56),
+						 new Pos3D(93, -26, 16),
+						 new Pos3D(69, -31, -15), };
 
 /* Scene dessinee                               */
 static void scene(void) {
-	glPushMatrix();
-	glScalef(0.1, 0.1, 0.1);
-	myLuge();
-	startPlateforme();
+	//glPushMatrix();
+	//myLuge();
+	//startPlateforme();
 	//stopPlateforme();
-	glPopMatrix();
+	//glPopMatrix();
 
 	glPushMatrix();
 	//pisteLuge();
