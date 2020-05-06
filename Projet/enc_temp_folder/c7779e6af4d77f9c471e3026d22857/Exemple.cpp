@@ -151,18 +151,6 @@ static void tangenteSurBSpline(CH3D** tPos, float t, float mb[4][4], Pos3D* poin
 
 }
 
-static void produitVectorielle(Pos3D p1, Pos3D p2, Pos3D pRes) {
-	float x = p1.x - p2.x;
-	float y = p1.y - p2.y;
-	float z = p1.z - p2.z;
-	pRes.x = x;
-	pRes.y = y;
-	pRes.z = z;
-}
-
-static float produitScalaire(Pos3D p1, Pos3D p2) {
-	return p1.x * p2.x + p1.y * p2.y + p1.z * p2.z;
-}
 
 
 static void calculNormal(float x, float y, float z, float tx, float ty, float tz) {
