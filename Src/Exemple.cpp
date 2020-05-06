@@ -800,24 +800,24 @@ void stopPlateforme() {
 
 static int nbp = 100;
 static int nbPoints = 18;
-static CH3D* tPosT[] = { new Pos3D(0.0F * 10, 15.0F * 10,-50.0F * 10),
-						 new Pos3D(0 * 10, -3 * 10,10 * 10),
-						 new Pos3D(0 * 10, -9 * 10, 30 * 10),
-						 new Pos3D(-3.0F * 10, -12 * 10, 48 * 10),
-						 new Pos3D(-30.0F * 10,-20 * 10,75 * 10),
-						 new Pos3D(30.0F * 10, -27 * 10, 80 * 10),
-						 new Pos3D(30 * 10, -32 * 10, 90 * 10),
-						 new Pos3D(2.0F * 10, -42 * 10,110 * 10),
-						 new Pos3D(-15.0F * 10, -49 * 10,150 * 10),
-						 new Pos3D(-50.0F * 10, -55 * 10, 170 * 10),
-						 new Pos3D(-35 * 10, -62 * 10, 185 * 10),
-						 new Pos3D(-0 * 10,-67 * 10,200 * 10),
-						 new Pos3D(-12 * 10, -71 * 10, 225 * 10),
-						 new Pos3D(-15 * 10, -73 * 10, 240* 10),
-						 new Pos3D(-30 * 10, -74 * 10,250* 10),
-						 new Pos3D(-30 * 10, -75 * 10,265 * 10),
-						 new Pos3D(-30 * 10, -69 * 10, 285.0F * 10),
-						 new Pos3D(-30 * 10, -50 * 10, 350 * 10),
+static CH3D* tPosT[] = { new Pos3D(0.0F , 15.0F ,-50.0F ),
+						 new Pos3D(0 , -3 ,10 ),
+						 new Pos3D(0 , -9 , 30 ),
+						 new Pos3D(-3.0F , -12 , 48 ),
+						 new Pos3D(-30.0F ,-20 ,75 ),
+						 new Pos3D(30.0F , -27 , 80 ),
+						 new Pos3D(30 , -32 , 90 ),
+						 new Pos3D(2.0F , -42 ,110 ),
+						 new Pos3D(-15.0F , -49 ,150 ),
+						 new Pos3D(-50.0F , -55 , 170 ),
+						 new Pos3D(-35 , -62 , 185 ),
+						 new Pos3D(-0 ,-67 ,200 ),
+						 new Pos3D(-12 , -71 , 225 ),
+						 new Pos3D(-15 , -73 , 240),
+						 new Pos3D(-30 , -74 ,250),
+						 new Pos3D(-30 , -75 ,265 ),
+						 new Pos3D(-30 , -69 , 285.0F ),
+						 new Pos3D(-30 , -50 , 350 ),
 };
 
 
@@ -825,6 +825,7 @@ static CH3D* tPosT[] = { new Pos3D(0.0F * 10, 15.0F * 10,-50.0F * 10),
 /* Scene dessinee                               */
 static void scene(void) {
 	glPushMatrix();
+	glScalef(0.1, 0.1, 0.1);
 	myLuge();
 	startPlateforme();
 	//stopPlateforme();
