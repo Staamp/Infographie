@@ -188,7 +188,7 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		positionSurBSpline(&tPos[nb], t - nb, mb, &point);
 		glVertex3f(point.x, point.y, point.z);
 		tangenteSurBSpline(&tPos2[nb], t - nb, mb, &tgt);
-		glVertex3f(tgt.x, tgt.y, tgt.z);
+		//glVertex3f(tgt.x, tgt.y, tgt.z);
 
 		pts[i] = point;
 		tan[i] = tgt;
@@ -762,26 +762,28 @@ void stopPlateforme() {
 
 
 static int nbp = 100;
-static int nbPoints = 7;
-static CH3D* tPosT[] = { new Pos3D(0.0F * 10, 0.0F * 10,0.0F * 10),
-						 new Pos3D(3.0F * 10, -2.0F * 10,0.0F * 10),
-						 new Pos3D(5.0F * 10, -4.0F * 10, -3.0F * 10),
-						 new Pos3D(8.0F * 10, -6.0F * 10, -30.0F * 10),
-						 new Pos3D(12.0F * 10,-8.0F * 10,30.0F * 10),
-						 new Pos3D(60.0F * 10, -10.0F * 10, -2.0F * 10),
-						 new Pos3D(15.0F * 10, -12.0F * 10, 2.0F * 10),
-						 new Pos3D(0.0F * 10, -14.0F * 10,6.0F * 10),
-						 new Pos3D(17.0F * 10, -16.0F * 10,100.0F * 10),
-						 new Pos3D(60.0F * 10, -18.0F * 10, 5.0F * 10),
-						 new Pos3D(21.0F * 10, -20.0F * 10, -0.5F * 10),
-						 new Pos3D(21.0F * 10,-22.0F * 10,-4.0F * 10),
-						 new Pos3D(23.5F * 10, -24.0F * 10, -6.0F * 10),
-						 new Pos3D(25.0F * 10, -24.0F * 10, -6.0F * 10),
-						 new Pos3D(29.0F * 10, -20.0F * 10,-3.0F * 10),
-						 new Pos3D(33.0F * 10, -15.0F * 10,-2.0F * 10),
-						 new Pos3D(37.0F * 10, -10.0F * 10, -2.0F * 10),
-						 new Pos3D(41.0F * 100, -6.0F * 10, -2.0F * 10),  
+static int nbPoints = 18;
+static CH3D* tPosT[] = { new Pos3D(0.0F * 10, 15.0F * 10,-50.0F * 10),
+						 new Pos3D(0 * 10, -3 * 10,10 * 10),
+						 new Pos3D(0 * 10, -9 * 10, 30 * 10),
+						 new Pos3D(-3.0F * 10, -12 * 10, 48 * 10),
+						 new Pos3D(-30.0F * 10,-20 * 10,75 * 10),
+						 new Pos3D(30.0F * 10, -27 * 10, 80 * 10),
+						 new Pos3D(30 * 10, -32 * 10, 90 * 10),
+						 new Pos3D(2.0F * 10, -42 * 10,110 * 10),
+						 new Pos3D(-15.0F * 10, -49 * 10,150 * 10),
+						 new Pos3D(-50.0F * 10, -55 * 10, 170 * 10),
+						 new Pos3D(-35 * 10, -62 * 10, 185 * 10),
+						 new Pos3D(-0 * 10,-67 * 10,200 * 10),
+						 new Pos3D(-12 * 10, -71 * 10, 225 * 10),
+						 new Pos3D(-15 * 10, -73 * 10, 240* 10),
+						 new Pos3D(-30 * 10, -74 * 10,250* 10),
+						 new Pos3D(-30 * 10, -75 * 10,265 * 10),
+						 new Pos3D(-30 * 10, -69 * 10, 285.0F * 10),
+						 new Pos3D(-30 * 10, -50 * 10, 350 * 10),
 };
+
+
 
 /* Scene dessinee                               */
 static void scene(void) {
