@@ -810,21 +810,33 @@ void stopPlateforme() {
 
 static int nbp = 100;
 static int nbPoints = 7;
-static CH3D* tPosT[] = { new Pos3D(0.0F, 0.0F,0.00F),
-						 new Pos3D(0.0, -6.5, 32.0),
-						 new Pos3D(22.0, -17.3, 61.5),
-						 new Pos3D(59, -25, 73),
-						 new Pos3D(90,-27,56),
-						 new Pos3D(93, -26, 16),
-						 new Pos3D(69, -31, -15), };
+static CH3D* tPosT[] = { new Pos3D(0.0F * 10, 0.0F * 10,0.0F * 10),
+						 new Pos3D(3.0F * 10, -2.0F * 10,0.0F * 10),
+						 new Pos3D(5.0F * 10, -4.0F * 10, -3.0F * 10),
+						 new Pos3D(8.0F * 10, -6.0F * 10, -30.0F * 10),
+						 new Pos3D(12.0F * 10,-8.0F * 10,30.0F * 10),
+						 new Pos3D(60.0F * 10, -10.0F * 10, -2.0F * 10),
+						 new Pos3D(15.0F * 10, -12.0F * 10, 2.0F * 10),
+						 new Pos3D(0.0F * 10, -14.0F * 10,6.0F * 10),
+						 new Pos3D(17.0F * 10, -16.0F * 10,100.0F * 10),
+						 new Pos3D(60.0F * 10, -18.0F * 10, 5.0F * 10),
+						 new Pos3D(21.0F * 10, -20.0F * 10, -0.5F * 10),
+						 new Pos3D(21.0F * 10,-22.0F * 10,-4.0F * 10),
+						 new Pos3D(23.5F * 10, -24.0F * 10, -6.0F * 10),
+						 new Pos3D(25.0F * 10, -24.0F * 10, -6.0F * 10),
+						 new Pos3D(29.0F * 10, -20.0F * 10,-3.0F * 10),
+						 new Pos3D(33.0F * 10, -15.0F * 10,-2.0F * 10),
+						 new Pos3D(37.0F * 10, -10.0F * 10, -2.0F * 10),
+						 new Pos3D(41.0F * 100, -6.0F * 10, -2.0F * 10),  
+};
 
 /* Scene dessinee                               */
 static void scene(void) {
-	//glPushMatrix();
-	//myLuge();
-	//startPlateforme();
+	glPushMatrix();
+	myLuge();
+	startPlateforme();
 	//stopPlateforme();
-	//glPopMatrix();
+	glPopMatrix();
 
 	glPushMatrix();
 	//pisteLuge();
