@@ -40,12 +40,12 @@ static int wPx = 50;					// Position horizontale de la fenetre
 static int wPy = 50;					// Position verticale de la fenetre
 
 static float rx = 4.0F;					// Rotation en x
-static float ry = -182.0F;					// Rotation en y
+static float ry = -182.0F;				// Rotation en y
 static float rz = 0.0F;					// Rotation en z
 
 static float px = 0.0;					// pour les cameras et glutlookat
 static float py = 6.0;					// pour les cameras et glutlookat
-static float pz = 3.0;				// pour les cameras et glutlookat
+static float pz = 3.0;					// pour les cameras et glutlookat
 static int versionCamera = 0;			//changer le type de camera
 
 static int isLine = 0;					// Affichage fil de fer
@@ -93,8 +93,6 @@ static float CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
 static void vertex(Pos3D* p, int couleur, double taille) {
 	printf("VERTEX\n");
 	glPushMatrix();
@@ -108,12 +106,11 @@ static void vertex(Pos3D* p, int couleur, double taille) {
 
 /* Calcul la position d'un point sur une courbe  */
 /* B-Spline controlee par quatre points          */
-/* tPos : le tableau des 4 points de controle    */
+/* tPos : le tableau des points de controle      */
 /* t : la valeur de calcul du point              */
 /*     t a prendre dans l'intervalle [0.0,1.0]   */
 /* mb : la matrice de base                       */
 /* point : le point resultat                     */
-
 static void positionSurBSpline(CH3D** tPos, float t, float mb[4][4], Pos3D* point) {
 	float vt[4] = { t * t * t,t * t,t,1.0F };
 	float vtmb[4] = { 0.0F,0.0F,0.0F,0.0F };
@@ -129,7 +126,13 @@ static void positionSurBSpline(CH3D** tPos, float t, float mb[4][4], Pos3D* poin
 	}
 }
 
-
+/* Calcul la tangente d'un point sur une courbe  */
+/* B-Spline controlee par quatre points          */
+/* tPos : le tableau des points de controle      */
+/* t : la valeur de calcul du point              */
+/*     t a prendre dans l'intervalle [0.0,1.0]   */
+/* mb : la matrice de base                       */
+/* point : le point resultat                     */
 static void tangenteSurBSpline(CH3D** tPos, float t, float mb[4][4], Pos3D* point) {
 	float vt[4] = { 3 * t * t,2 * t,1.0F,0 };
 	float vtmb[4] = { 0.0F,0.0F,0.0F,0.0F };
@@ -145,17 +148,21 @@ static void tangenteSurBSpline(CH3D** tPos, float t, float mb[4][4], Pos3D* poin
 	}
 }
 
-
+/* Affichage de la tangente d'un point sur une courbe */
+/* x : coordonne x du point sur la courbe			  */
+/* y : coordonne y du point sur la courbe			  */
+/* z : coordonne z du point sur la courbe			  */
+/* vx : coordonne vx pour la tangente				  */
+/* vy : coordonne vy pour la tangente				  */
+/* vz : coordonne vz pour la tangente				  */
 void ligneTangente(float x, float y, float z, float vx, float vy, float vz) {
 	printf("lt\n");
 	printf("%f %f %f\n", x, y, z);
 	glBegin(GL_LINES);
-	glTranslatef(x, y, z);
+	//glTranslatef(x, y, z);
 	glVertex3f(x, y, z);
 	glVertex3f(vx, vy, vz);
 	glEnd();
-
-	
 }
 
 /* Modelise une courbe B-Spline par morceaux     */
@@ -166,10 +173,6 @@ void ligneTangente(float x, float y, float z, float vx, float vy, float vz) {
 /* n : le nombre de points a calculer            */
 /* typePrimitive : le type de primitive OpenGL   */
 /*                 a utiliser                    */
-
-
-
-
 static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int n, GLenum typePrimitive) {
 	n = 500;
 	Pos3D pts[500];
@@ -201,8 +204,6 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		//printf("%f %f %f\n", pts[i].x, pts[i].y, pts[i].z);
 		ligneTangente(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz);
 	}
-
-
 }
 
 /* Fonction d'initialisation des parametres     */
@@ -326,8 +327,6 @@ void mySolidCube(double c) {
 	glVertex3d(-c, -c, -c); // 8 
 	glEnd();
 }
-
-
 
 /* Fonction qui genere un cylindre	*/
 /* hauteur : la hauteur du cylindre */
@@ -718,52 +717,6 @@ void bicubiquePatch(int n, matrice m, matrice mprime, coord_3D* p) {
 
 
 
-
-
-
-
-static GLfloat ptsbc[16][4] = {
-  {-3.0F,-3.0F,-1.0F, 1.0F },{-1.0F,-3.0F, 1.0F, 1.0F },
-  { 1.0F,-3.0F, 2.0F, 1.0F },{ 3.0F,-3.0F,-1.0F, 1.0F },
-  {-3.0F,-1.0F, 3.0F, 1.0F },{-1.0F,-1.0F, 2.0F, 1.0F },
-  { 1.0F,-1.0F,-1.0F, 1.0F },{ 3.0F,-1.0F, 1.0F, 1.0F },
-  {-3.0F, 1.0F,-1.0F, 1.0F },{-1.0F, 1.0F,-1.0F, 1.0F },
-  { 1.0F, 1.0F, 1.0F, 1.0F },{ 3.0F, 1.0F,-1.0F, 1.0F },
-  {-3.0F, 3.0F,-2.0F, 1.0F },{-1.0F, 3.0F, 1.0F, 1.0F },
-  { 1.0F, 3.0F, 3.0F, 1.0F },{ 3.0F, 3.0F, 1.0F, 1.0F } };
-
-
-
-
-
-
-static coord_3D* ptsBZBZ = (coord_3D*)ptsbc;
-
-
-
-
-static matrice bezierMAT =
-{ -1.0F, 3.0F,-3.0F, 1.0F,
-   3.0F,-6.0F, 3.0F, 0.0F,
-  -3.0F, 3.0F, 0.0F, 0.0F,
-   1.0F, 0.0F, 0.0F, 0.0F };
-
-
-
-static GLfloat crbs[16][3] = {
-	{-3.0F,-3.0F,-3.0F },{-1.0F,-3.0F,1.0F},{1.0F,-3.0F,1.0F },{3.0F,-3.0F,-3.0F },
-	{-3.0F,-1.0F,-3.0F},{-3.0F,-1.0F,1.0F},{-1.0F,-1.0F,1.0F},{1.0F,-1.0F,-3.0F },
-	{-3.0F,1.0F,-3.0F},{-3.0F,1.0F,1.0F},{-1.0F,1.0F,1.0F},{1.0F,1.0F,-3.0F },
-	{-3.0F,3.0F,-3.0F},{-1.0F,3.0F,1.0F},{1.0F,3.0F,1.0F},{3.0F,3.0F,-3.0F}
-};
-
-
-
-static coord_3D* courbe = (coord_3D*)crbs;
-
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void init(void) {
@@ -1036,8 +989,6 @@ static void keyboard(unsigned char key, int x, int y) {
 	case 'v': //b
 		printf("dx %f | dy %f | de %f | rpx %f | rpy %f |rpz %f\n", dx,dy,dz,rpx,rpy,rpz);
 		glutPostRedisplay();
-
-
 	}
 }
 
@@ -1110,8 +1061,6 @@ static void special(int key, int x, int y) {
 		rz = 0.0;
 		glutPostRedisplay();
 		break;
-
-
 	}
 }
 
@@ -1154,9 +1103,7 @@ static void clean(void) {
 
 /* Fonction principale                          */
 int main(int argc, char** argv) {
-
 	atexit(clean);
-
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(wTx, wTy);
