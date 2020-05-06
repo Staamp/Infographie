@@ -217,6 +217,13 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		Pos3D tgt;
 		positionSurBSpline(&tPos[nb], t - nb, mb, &point);
 		glVertex3f(point.x, point.y, point.z);
+
+		glRotatef(90.0, 0.0, 1.0, 0.0);
+		glVertex3f(point.x, point.y, point.z);
+
+		glRotatef(-90.0, 0.0, 1.0, 0.0);
+		glVertex3f(point.x, point.y, point.z);
+
 		tangenteSurBSpline(&tPos2[nb], t - nb, mb, &tgt);
 		//glVertex3f(tgt.x, tgt.y, tgt.z);
 
