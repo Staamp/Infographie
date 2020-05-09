@@ -146,9 +146,6 @@ static void tangenteSurBSpline(CH3D** tPos, float t, float mb[4][4], Pos3D* poin
 		point->y += vtmb[j] * tPos[j]->y;
 		point->z += vtmb[j] * tPos[j]->z;
 	}
-
-
-
 }
 
 static void produitVectorielle(Pos3D p1, Pos3D p2, Pos3D pRes) {
@@ -165,11 +162,26 @@ static float produitScalaire(Pos3D p1, Pos3D p2) {
 }
 
 
-static void calculNormal(float x, float y, float z, float tx, float ty, float tz) {
+
+static void calculVecteur(float x, float y, float z, float tx, float ty, float tz, Pos3D* r) {
+	r->x = x - tx;
+	r->y = y - ty;
+	r->z = z - tz;
+}
+
+
+static void calculNormal(float x, float y, float z, float tx, float ty, float tz, float x1, float y1, float z1) {
 	
-	float nx = tx - x;
-	float ny = ty - y;
-	float nz = tz - z;
+	printf("%f %f %f | %f %f %f",x,y,z,tx,ty,tz);
+	Pos3D v1;
+	calculVecteur(x,y,z,tx,ty,tz,&v1);
+	printf("  = %f %f %f", v1.x, v1.y, v1.z);
+
+	Pos3D v2;
+	calculVecteur(x, y, z, x1, y1, z1, &v2);
+	printf("  = %f %f %f\n\n", v2.x, v2.y, v2.z);
+
+	//A partir de la nous avons deux equations qui forment un plan.
 
 
 }
@@ -186,10 +198,7 @@ static void calculNormal(float x, float y, float z, float tx, float ty, float tz
 /* vy : coordonne vy pour la tangente				  */
 /* vz : coordonne vz pour la tangente				  */
 void ligneTangente(float x, float y, float z, float vx, float vy, float vz) {
-	printf("lt\n");
-	printf("%f %f %f\n", x, y, z);
 	glBegin(GL_LINES);
-	//glTranslatef(x, y, z);
 	glVertex3f(x, y, z);
 	glVertex3f(vx, vy, vz);
 	glEnd();
@@ -237,9 +246,14 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		float vx = pts[i].x + tan[i].x / d;
 		float vy = pts[i].y + tan[i].y / d;
 		float vz = pts[i].z + tan[i].z / d;
-		printf("%f %f %f\n", tan[i].x, tan[i].y, tan[i].z);
+		//printf("%f %f %f\n", tan[i].x, tan[i].y, tan[i].z);
 		//printf("%f %f %f\n", pts[i].x, pts[i].y, pts[i].z);
 		ligneTangente(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz);
+	
+		if (i + 1 == n) {
+			break;
+		}
+		calculNormal(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz, pts[i+1].x, pts[i+1].y, pts[i+1].z);
 	}
 }
 
