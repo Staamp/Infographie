@@ -215,8 +215,12 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		//}
 		//calculNormal(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz, pts[i+1].x, pts[i+1].y, pts[i+1].z);
 
-		//Pos3D norm;
-		traceLigne(pts[i].x, pts[i].y, pts[i].z, pts[i].x+0.05, pts[i].y+2, pts[i].z+0.05);
+		Pos3D norm;
+		norm.x = pts[i].x + 0.05;
+		norm.y = pts[i].y + 2;
+		norm.z = pts[i].z + 0.05;
+		traceLigne(pts[i].x, pts[i].y, pts[i].z, norm.x, norm.y, norm.z);
+		normal[i] = norm;
 	}
 }
 
