@@ -159,10 +159,6 @@ static void calculNormal(float x, float y, float z, float tx, float ty, float tz
 
 }
 
-
-
-
-
 /* Affichage de la tangente d'un point sur une courbe */
 /* x : coordonne x du point sur la courbe			  */
 /* y : coordonne y du point sur la courbe			  */
@@ -547,19 +543,8 @@ void normalize(coord_3D* n) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void init(void) {
-	/*const GLfloat mat_shininess[] = { 50.0 };
-	glMaterialfv(GL_FRONT, GL_SPECULAR, blanc1);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, blanc);
-	glLightfv(GL_LIGHT2, GL_DIFFUSE, blanc);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
-	glEnable(GL_LIGHT2);
-	glDepthFunc(GL_LESS);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_NORMALIZE);*/
+	
+	
 	
 	// Chagrment des textures dans le dossier Bin/image
 	chargeTexture(textureGlace, "Image/glacePNG.png");
@@ -630,23 +615,28 @@ static void scene(void) {
 static void display(void) {
 	//printf("D\n");
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	const GLfloat light0_position[] = { 0.0,0.0,10.0,1.0 };
+	const GLfloat light0_position[] = { 20.0,10.0,0.0,1.0 };
+
+	const GLfloat light1_position[] = { -30.0,-50.0,350.0,1.0 };
+	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+
+	const GLfloat light2_position[] = { 32.0,-18.0,110.0,0.0 };
+	glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
+	glMatrixMode(GL_MODELVIEW);
+
 	glPushMatrix();
 
 	glRotatef(rx, 1.0F, 0.0F, 0.0F);
 	glRotatef(ry, 0.0F, 1.0F, 0.0F);
 	glRotatef(rz, 0.0F, 0.0F, 1.0F);
 
-	switch (versionCamera) {
-	case 0:
-		glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-		gluLookAt(px, py, pz, px, py, pz-1, 0.0, 1.0, 0.0);
-		break;
-	case 1:
-		gluLookAt(px, py, pz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-		glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-		break;
-	}
+	glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+	gluLookAt(px, py, pz, px, py, pz-1, 0.0, 1.0, 0.0);
+	
 	scene();
 	glPopMatrix();
 	glFlush();
@@ -813,6 +803,15 @@ static void special(int key, int x, int y) {
 		pz = -1.0;
 		rx = 4.0;
 		ry = -182.0;
+		rz = 0.0;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_F5:
+		px = 27.0;
+		py = -19.0;
+		pz = 74.0;
+		rx = 12.0;
+		ry = -146.0;
 		rz = 0.0;
 		glutPostRedisplay();
 		break;
