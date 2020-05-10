@@ -44,8 +44,8 @@ static float ry = -182.0F;				// Rotation en y
 static float rz = 0.0F;					// Rotation en z
 
 static float px = 0.0;					// pour les cameras et glutlookat
-static float py = 6.0;					// pour les cameras et glutlookat
-static float pz = 3.0;					// pour les cameras et glutlookat
+static float py = 1.0;					// pour les cameras et glutlookat
+static float pz = -1.0;					// pour les cameras et glutlookat
 static int versionCamera = 0;			//changer le type de camera
 
 static int isLine = 0;					// Affichage fil de fer
@@ -54,22 +54,6 @@ static int mx;							// pour la souris
 static int mouseActive = 0;				// pour la souris
 
 static unsigned int textureGlace = 0;	//Texture glace
-
-
-
-
-
-
-static float dx = 0.0F;					// Rotation en x
-static float dy = 0.0F;					// Rotation en y
-static float dz = 0.0F;					// Rotation en z
-
-static float rpx = 0.0;					// pour les cameras et glutlookat
-static float rpy = 0.0;					// pour les cameras et glutlookat
-static float rpz = 10.0;				// pour les cameras et glutlookat
-
-
-
 
 static float NRUBS[4][4] = { { -1.0 / 6.0,  3.0 / 6.0, -3.0 / 6.0,  1.0 / 6.0 },
 							  {  3.0 / 6.0, -6.0 / 6.0,  3.0 / 6.0,        0.0 },
@@ -91,17 +75,6 @@ static float CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-static void vertex(Pos3D* p, int couleur, double taille) {
-	printf("VERTEX\n");
-	glPushMatrix();
-	glTranslated(p->x, p->y, p->z);
-	glutSolidSphere(taille, 36, 18);
-	glPopMatrix();
-}
-
-
 
 
 /* Calcul la position d'un point sur une courbe  */
@@ -172,14 +145,14 @@ static void calculVecteur(float x, float y, float z, float tx, float ty, float t
 
 static void calculNormal(float x, float y, float z, float tx, float ty, float tz, float x1, float y1, float z1) {
 	
-	printf("%f %f %f | %f %f %f",x,y,z,tx,ty,tz);
+	//printf("%f %f %f | %f %f %f",x,y,z,tx,ty,tz);
 	Pos3D v1;
 	calculVecteur(x,y,z,tx,ty,tz,&v1);
-	printf("  = %f %f %f", v1.x, v1.y, v1.z);
+	//printf("  = %f %f %f", v1.x, v1.y, v1.z);
 
 	Pos3D v2;
 	calculVecteur(x, y, z, x1, y1, z1, &v2);
-	printf("  = %f %f %f\n\n", v2.x, v2.y, v2.z);
+	//printf("  = %f %f %f\n\n", v2.x, v2.y, v2.z);
 
 	//A partir de la nous avons deux equations qui forment un plan.
 
@@ -197,7 +170,7 @@ static void calculNormal(float x, float y, float z, float tx, float ty, float tz
 /* vx : coordonne vx pour la tangente				  */
 /* vy : coordonne vy pour la tangente				  */
 /* vz : coordonne vz pour la tangente				  */
-void ligneTangente(float x, float y, float z, float vx, float vy, float vz) {
+void traceLigne(float x, float y, float z, float vx, float vy, float vz) {
 	glBegin(GL_LINES);
 	glVertex3f(x, y, z);
 	glVertex3f(vx, vy, vz);
@@ -216,6 +189,7 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 	n = 500;
 	Pos3D pts[500];
 	Pos3D tan[500];
+	Pos3D normal[500];
 	glBegin(typePrimitive);
 	for (int i = 0; i < n; i++) {
 		float t = i / (n - 1.0) * (nbPoints - 3);
@@ -226,34 +200,27 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		Pos3D tgt;
 		positionSurBSpline(&tPos[nb], t - nb, mb, &point);
 		glVertex3f(point.x, point.y, point.z);
-
-		glRotatef(90.0, 0.0, 1.0, 0.0);
-		glVertex3f(point.x, point.y, point.z);
-
-		glRotatef(-90.0, 0.0, 1.0, 0.0);
-		glVertex3f(point.x, point.y, point.z);
-
 		tangenteSurBSpline(&tPos2[nb], t - nb, mb, &tgt);
-		//glVertex3f(tgt.x, tgt.y, tgt.z);
-
+		
 		pts[i] = point;
 		tan[i] = tgt;
 	}
 	glEnd();
-
+	
 	for (int i = 0; i < n; i++) {
 		float d = sqrt(tan[i].x * tan[i].x + tan[i].y * tan[i].y + tan[i].z * tan[i].z);
 		float vx = pts[i].x + tan[i].x / d;
 		float vy = pts[i].y + tan[i].y / d;
 		float vz = pts[i].z + tan[i].z / d;
-		//printf("%f %f %f\n", tan[i].x, tan[i].y, tan[i].z);
-		//printf("%f %f %f\n", pts[i].x, pts[i].y, pts[i].z);
-		ligneTangente(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz);
+		traceLigne(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz);
 	
-		if (i + 1 == n) {
-			break;
-		}
-		calculNormal(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz, pts[i+1].x, pts[i+1].y, pts[i+1].z);
+		//if (i + 1 == n) {
+		//	break;
+		//}
+		//calculNormal(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz, pts[i+1].x, pts[i+1].y, pts[i+1].z);
+
+		//Pos3D norm;
+		traceLigne(pts[i].x, pts[i].y, pts[i].z, pts[i].x+0.05, pts[i].y+2, pts[i].z+0.05);
 	}
 }
 
@@ -337,7 +304,7 @@ static void calculBSpline(Pos3D** tPos, int n, double mb[4][4], int nb, Pos3D** 
 
 /* Fonction qui realise cube cote c */
 /* c : taille d'un cote				*/
-void mySolidCube(double c) {
+void mySolidCube(float c) {
 	c /= 2.0;
 	glBegin(GL_QUADS);
 	glNormal3f(0.0F, 0.0F, 1.0F);
@@ -560,81 +527,7 @@ static void myLuge() {
 
 
 
-static void bezier(int nbPoints, Pos3D** tPos, int n, GLenum typePrimitive) {
-	float t, mt;
-	float x, y, z, fac;
-	long long* cn = (long long*)calloc(nbPoints, sizeof(long long));
-	cn[0] = 1;
-	cn[1] = nbPoints - 1;
-	for (int i = 2; i < nbPoints; i++)
-		cn[i] = (cn[i - 1] * (nbPoints - i)) / i;
-	glBegin(typePrimitive);
-	for (int i = 0; i < n; i++) {
-		t = (float)i / (n - 1);
-		mt = 1.0F - t;
-		x = y = z = 0.0F;
-		for (int j = 0; j < nbPoints; j++) {
-			fac = cn[j] * pow(t, j) * pow(mt, nbPoints - 1 - j);
-			x += fac * tPos[j]->x;
-			y += fac * tPos[j]->y;
-			z += fac * tPos[j]->z;
-		}
-		glVertex3f(x, y, z);
-	}
-	glEnd();
-	free(cn);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct coord_3D {
-	GLfloat x = 0.0F;
-	GLfloat y = 0.0F;
-	GLfloat z = 0.0F;
-};
-
-typedef struct coord_3D coord_3D;
-typedef float matrice[4][4];
-typedef float vecteur[4];
-
-
-static GLfloat pts[16][3] = {
-	{-3.0F,-3.0F,-1.0F },{-1.0F,-3.0F,1.0F},{1.0F,-3.0F,1.0F },{3.0F,-3.0F,-1.0F },
-	{-3.0F,-1.0F,-1.0F},{-1.0F,-1.0F,-1.0F},{1.0F,-1.0F,1.0F},{3.0F,-1.0F,-1.0F },
-	{-3.0F,1.0F,-1.0F},{-1.0F,1.0F,1.0F},{1.0F,1.0F,1.0F},{3.0F,1.0F,-1.0F },
-	{-3.0F,3.0F,-1.0F},{-1.0F,3.0F,1.0F},{1.0F,3.0F,1.0F},{3.0F,3.0F,-1.0F}
-};
-
-static coord_3D* points = (coord_3D*)pts;
-
-
-
-
-
-void point(coord_3D* p, coord_3D* n, coord_3D* t) {
-	glTexCoord2f(t->x, t->y);
-	glNormal3f(n->x, n->y, n->z);
-	glVertex3f(p->x, p->y, p->z);
-}
-
-void vectoriel(coord_3D* v1, coord_3D* v2, coord_3D* v) {
-	v->x = v1->y * v2->z - v1->z * v2->y;
-	v->y = v1->z * v2->x - v1->x * v2->z;
-	v->z = v1->x * v2->y - v1->y * v2->x;
-}
-
+/*
 void normalize(coord_3D* n) {
 	float d = (float)sqrt(n->x * n->x + n->y * n->y + n->z * n->z);
 	if (d != 0.0F) {
@@ -644,126 +537,9 @@ void normalize(coord_3D* n) {
 	}
 }
 
-void transposition(matrice m, matrice t) {
-	for (int i = 0; i < 4; i++)
-		for (int j = 0; j < 4; j++)
-			t[i][j] = m[j][i];
-}
+*/
 
-void produitMatriceMatrice(matrice m1, matrice m2, matrice m) {
-	for (int i = 0; i < 4; i++)
-		for (int j = 0; j < 4; j++) {
-			m[i][j] = 0;
-			for (int k = 0; k < 4; k++)
-				m[i][j] += m1[i][k] * m2[k][j];
-		}
-}
 
-void produitMatriceVecteur(matrice m, vecteur v, vecteur r) {
-	for (int i = 0; i < 4; i++) {
-		r[i] = 0;
-		for (int j = 0; j < 4; j++)
-			r[i] += m[i][j] * v[j];
-	}
-}
-
-void produitVecteurMatrice(vecteur v, matrice m, vecteur r) {
-	for (int i = 0; i < 4; i++) {
-		r[i] = 0;
-		for (int j = 0; j < 4; j++)
-			r[i] += v[j] * m[j][i];
-	}
-}
-
-float produitVecteurVecteur(vecteur v1, vecteur v2) {
-	float r = 0;
-	for (int i = 0; i < 4; i++)
-		r += v1[i] * v2[i];
-	return(r);
-}
-
-void bicubiquePatch(int n, matrice m, matrice mprime, coord_3D* p) {
-	int i, j;
-	coord_3D** pts = (coord_3D**)malloc(n * sizeof(coord_3D*));
-	coord_3D** nms = (coord_3D**)malloc(n * sizeof(coord_3D*));
-	coord_3D** tex = (coord_3D**)malloc(n * sizeof(coord_3D*));
-	for (i = 0; i < n; i++) {
-		tex[i] = (coord_3D*)malloc(n * sizeof(coord_3D));
-		pts[i] = (coord_3D*)malloc(n * sizeof(coord_3D));
-		nms[i] = (coord_3D*)malloc(n * sizeof(coord_3D));
-	}
-	matrice tx, a, aa;
-	matrice ty, b, bb;
-	matrice tz, c, cc;
-	for (i = 0; i < 4; i++)
-		for (j = 0; j < 4; j++) {
-			a[i][j] = p[i * 4 + j].x;
-			b[i][j] = p[i * 4 + j].y;
-			c[i][j] = p[i * 4 + j].z;
-		}
-	matrice trans;
-	transposition(mprime, trans);
-	produitMatriceMatrice(m, a, aa);
-	produitMatriceMatrice(m, b, bb);
-	produitMatriceMatrice(m, c, cc);
-	produitMatriceMatrice(aa, trans, tx);
-	produitMatriceMatrice(bb, trans, ty);
-	produitMatriceMatrice(cc, trans, tz);
-	for (i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			float s = (float)i / (float)(n - 1);
-			float t = (float)j / (float)(n - 1);
-			vecteur S = { s * s * s,s * s,s,1.0F };
-			vecteur T = { t * t * t,t * t,t,1.0F };
-			vecteur dS = { 3 * s * s,2 * s,1.0F,0.0F };
-			vecteur dT = { 3 * t * t,2 * t,1.0F,0.0F };
-			vecteur d;
-			coord_3D ds, dt;
-			produitVecteurMatrice(S, tx, d);
-			float x = produitVecteurVecteur(d, T);
-			produitVecteurMatrice(dS, tx, d);
-			ds.x = produitVecteurVecteur(d, T);
-			produitVecteurMatrice(S, tx, d);
-			dt.x = produitVecteurVecteur(d, dT);
-			produitVecteurMatrice(S, ty, d);
-			float y = produitVecteurVecteur(d, T);
-			produitVecteurMatrice(dS, ty, d);
-			ds.y = produitVecteurVecteur(d, T);
-			produitVecteurMatrice(S, ty, d);
-			dt.y = produitVecteurVecteur(d, dT);
-			produitVecteurMatrice(S, tz, d);
-			float z = produitVecteurVecteur(d, T);
-			produitVecteurMatrice(dS, tz, d);
-			ds.z = produitVecteurVecteur(d, T);
-			produitVecteurMatrice(S, tz, d);
-			dt.z = produitVecteurVecteur(d, dT);
-			vectoriel(&dt, &ds, &nms[i][j]);
-			normalize(&nms[i][j]);
-			tex[i][j].x = s;
-			tex[i][j].y = t;
-			pts[i][j].x = x;
-			pts[i][j].y = y;
-			pts[i][j].z = z;
-		}
-	}
-	glBegin(GL_QUADS);
-	for (i = 0; i < n - 1; i++)
-		for (int j = 0; j < n - 1; j++) {
-			point(&pts[i][j], &nms[i][j], &tex[i][j]);
-			point(&pts[i + 1][j], &nms[i + 1][j], &tex[i + 1][j]);
-			point(&pts[i + 1][j + 1], &nms[i + 1][j + 1], &tex[i + 1][j + 1]);
-			point(&pts[i][j + 1], &nms[i][j + 1], &tex[i][j + 1]);
-		}
-	glEnd();
-	for (i = 0; i < n; i++) {
-		free(tex[i]);
-		free(pts[i]);
-		free(nms[i]);
-	}
-	free(tex);
-	free(pts);
-	free(nms);
-}
 
 
 
@@ -842,14 +618,11 @@ static void scene(void) {
 	glScalef(0.1, 0.1, 0.1);
 	myLuge();
 	startPlateforme();
-	//stopPlateforme();
 	glPopMatrix();
 
 	glPushMatrix();
-	//pisteLuge();
 	BSpline(nbPoints, tPosT, tPosT, NRUBS, nbp, GL_POINTS);
 	glPopMatrix();
-
 }
 
 /* Fonction executee lors d'un rafraichissement */
@@ -894,7 +667,7 @@ static void reshape(int wx, int wy) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	double ratio = (double)wx / wy;
-	if (ratio >= 1.0)
+	if (ratio >= 1.0F)
 		gluPerspective(80.0, ratio, 1.0, 2000.0);
 	else
 		gluPerspective(80.0 / ratio, ratio, 1.0, 2000.0);
@@ -968,80 +741,8 @@ static void keyboard(unsigned char key, int x, int y) {
 		pz += 1.0;
 		glutPostRedisplay();
 		break;
-	case 0x62: //b
-	case 'B':
-		px = 0.0;
-		py = 0.0;
-		pz = 20.0;
-		rx = 0.0;
-		ry = 0.0;
-		rz = 0.0;
-		glutPostRedisplay();
-		break;
-
-	case 't': //b
-		dx++;
-		//printf("dx++ %d\n",dx);
-		glutPostRedisplay();
-		break;
-	case 'g': //b
-		dx--;
-		//printf("dx-- %d\n",dx);
-		glutPostRedisplay();
-		break;
-	case 'y': //b
-		dy++;
-		//printf("dy %d\n", dy);
-		glutPostRedisplay();
-		break;
-	case 'h': //b
-		dy--;
-		//printf("dy-- %d",dy);
-		glutPostRedisplay();
-		break;
-	case 'u': //b
-		dz++;
-		//printf("dz++ %d", dz);
-		glutPostRedisplay();
-		break;
-	case 'j': //b
-		dz--;
-		//printf("dz-- %d", dz);
-		glutPostRedisplay();
-
-
-	case 'i': //b
-		rpx++;
-		//printf("rpx++ %d\n", rpx);
-		glutPostRedisplay();
-		break;
-	case 'k': //b
-		rpx--;
-		//printf("rpx-- %d\n", rpx);
-		glutPostRedisplay();
-		break;
-	case 'o': //b
-		rpy++;
-		//printf("rpy %d\n", rpy);
-		glutPostRedisplay();
-		break;
-	case 'l': //b
-		rpy--;
-		//printf("rpy-- %d", rpy);
-		glutPostRedisplay();
-		break;
-	case 'p': //b
-		rpz++;
-		//printf("rpz++ %d", rpz);
-		glutPostRedisplay();
-		break;
-	case 'm': //b
-		rpz--;
-		//printf("rpz-- %d", rpz);
-		glutPostRedisplay();
-
 	case 'v': //b
-		printf("dx %f | dy %f | de %f | rpx %f | rpy %f |rpz %f\n", dx,dy,dz,rpx,rpy,rpz);
+		printf("px %f | py %f | pz %f | rx %f | ry %f | rz %f\n", px,py,pz,rx,ry,rz);
 		glutPostRedisplay();
 	}
 }
@@ -1080,36 +781,36 @@ static void special(int key, int x, int y) {
 		break;
 
 	case GLUT_KEY_F1:
-		px = 7.0;
-		py = 23.0;
-		pz = -32.0;
-		rx = 44.0;
-		ry = 152.0;
+		px = 61.0;
+		py = -1.0;
+		pz = 263.0;
+		rx = 20.0;
+		ry = -44.0;
 		rz = 0.0;
 		glutPostRedisplay();
 		break;
 	case GLUT_KEY_F2:
-		px = 37.0;
-		py = -26.0;
-		pz = -65.0;
-		rx = 0.0;
-		ry = 166.0;
+		px = -69.0;
+		py = 54.0;
+		pz = 31.0;
+		rx = 28.0;
+		ry = -226.0;
 		rz = 0.0;
 		glutPostRedisplay();
 		break;
 	case GLUT_KEY_F3:
-		px = 103.0;
-		py = 25.0;
-		pz = 101.0;
-		rx = 30.0;
-		ry = 336.0;
+		px = 32.0;
+		py = -18.0;
+		pz = 110.0;
+		rx = 12.0;
+		ry = -64.0;
 		rz = 0.0;
 		glutPostRedisplay();
 		break;
 	case GLUT_KEY_F4:
 		px = 0.0;
-		py = 6.0;
-		pz = 3.0;
+		py = 1.0;
+		pz = -1.0;
 		rx = 4.0;
 		ry = -182.0;
 		rz = 0.0;
