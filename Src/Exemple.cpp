@@ -547,11 +547,8 @@ void normalize(coord_3D* n) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void init(void) {
-	
-	
-	
 	// Chagrment des textures dans le dossier Bin/image
-	chargeTexture(textureGlace, "Image/glacePNG.png");
+	chargeTexture(textureGlace, "../src/Image/glacePNG.png");
 }
 
 
