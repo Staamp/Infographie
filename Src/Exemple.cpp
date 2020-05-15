@@ -31,7 +31,7 @@ static float blanc[4] = { 1.0F,1.0F,1.0F,1.0F };
 static float brun[4] = { 0.59F,0.34F,0.09F,1.0F };
 static float noir[4] = { 0.0F,0.0F,0.0F,1.0F };
 static float gris[4] = { 0.65F,0.65F,0.65F,1.0F };
-static const float blanc1[] = { 1.2F,1.2F,1.2F,1.0F };
+static float blanc1[] = { 1.2F,1.2F,1.2F,1.0F };
 
 
 static int wTx = 480;					// Resolution horizontale de la fenetre
@@ -182,12 +182,15 @@ void traceLigne(float x, float y, float z, float vx, float vy, float vz) {
 /* typePrimitive : le type de primitive OpenGL   */
 /*                 a utiliser                    */
 static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int n, GLenum typePrimitive) {
-	n = 500;
-	Pos3D pts[500];
-	Pos3D tan[500];
-	Pos3D normal[500];
+	n = 510;
+
+	Pos3D *pts = new Pos3D[n];
+	Pos3D *tan = new Pos3D[n];
+	Pos3D *normal = new Pos3D[n];
+
 	glBegin(typePrimitive);
 	for (int i = 0; i < n; i++) {
+		
 		float t = i / (n - 1.0) * (nbPoints - 3);
 		int nb = (int)t;
 		if (nb == nbPoints - 3)
@@ -868,7 +871,6 @@ int main(int argc, char** argv) {
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
 	glutReshapeFunc(reshape);
-
 	glutMouseFunc(mouse);
 	glutMotionFunc(mouseMotion);
 	//glutPassiveMotionFunc(passiveMouseMotion);
@@ -876,5 +878,16 @@ int main(int argc, char** argv) {
 	//glutIdleFunc(NULL);
 	glutDisplayFunc(display);
 	glutMainLoop();
+
+	free(tPosT);
+	free(bleu);
+	free(blanc);
+	free(brun);
+	free(noir);
+	free(gris);
+	free(blanc1);
+	free(NRUBS);
+	free(CATMULL_ROM);
+
 	return(0);
 }
