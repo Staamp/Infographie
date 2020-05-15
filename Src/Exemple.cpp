@@ -191,7 +191,7 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 	glBegin(typePrimitive);
 	for (int i = 0; i < n; i++) {
 		
-		float t = i / (n - 1.0) * (nbPoints - 3);
+		float t = i / (n - 1.0F) * ((float)nbPoints - 3.0F);
 		int nb = (int)t;
 		if (nb == nbPoints - 3)
 			nb = nbPoints - 4;
@@ -296,7 +296,7 @@ static void determinationPositionSurBSpline(Pos3D** g, double t, double mb[4][4]
 /* tRes : le tableau de points resultat          */
 static void calculBSpline(Pos3D** tPos, int n, double mb[4][4], int nb, Pos3D** tRes) {
 	for (int i = 0; i < nb; i++) {
-		double pos = i / (nb - 1.0) * (n - 3);
+		double pos = i / (nb - 1.0) * ((double)n - 3);
 		int nb = (int)pos;
 		if (nb == n - 3)
 			nb = n - 4;
@@ -639,7 +639,7 @@ static void display(void) {
 	glRotatef(rz, 0.0F, 0.0F, 1.0F);
 
 	glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-	gluLookAt(px, py, pz, px, py, pz-1, 0.0, 1.0, 0.0);
+	gluLookAt(px, py, pz, px, py, pz -1.0F, 0.0, 1.0, 0.0);
 	
 	scene();
 	glPopMatrix();
