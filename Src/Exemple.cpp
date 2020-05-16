@@ -55,13 +55,34 @@ static int mouseActive = 0;				// pour la souris
 
 static unsigned int textureGlace = 0;	//Texture glace
 
+static int nbp = 500;					// Nombre de point que l'on veut calculer et generer sur notre B-Spline
+static int nbPoints = 18;				// Nombre de points de controle pour realiser notre B-Spline
+/* Tableau de CH3D de nos positions de nos points de controle pour realiser la B-Spline et la piste de luge */
+static CH3D* tPosT[] = { new Pos3D(0.0F , 15.0F ,-50.0F),
+						 new Pos3D(0 , -3 ,10),
+						 new Pos3D(0 , -9 , 30),
+						 new Pos3D(-3.0F , -12 , 48),
+						 new Pos3D(-30.0F ,-20 ,75),
+						 new Pos3D(30.0F , -27 , 80),
+						 new Pos3D(30 , -32 , 90),
+						 new Pos3D(0.0F , -42 ,130),
+						 new Pos3D(-30.0F , -49 ,150),
+						 new Pos3D(-40.0F , -55 , 170),
+						 new Pos3D(-35 , -62 , 185),
+						 new Pos3D(-0 ,-67 ,200),
+						 new Pos3D(-12 , -71 , 225),
+						 new Pos3D(-15 , -73 , 240),
+						 new Pos3D(-30 , -74 ,250),
+						 new Pos3D(-30 , -75 ,265),
+						 new Pos3D(-30 , -69 , 285.0F),
+						 new Pos3D(-30 , -50 , 350),
+};
+
+
 static float NRUBS[4][4] = { { -1.0 / 6.0,  3.0 / 6.0, -3.0 / 6.0,  1.0 / 6.0 },
 							  {  3.0 / 6.0, -6.0 / 6.0,  3.0 / 6.0,        0.0 },
 							  { -3.0 / 6.0,		   0.0,  3.0 / 6.0,        0.0 },
 							  {  1.0 / 6.0,  4.0 / 6.0,  1.0 / 6.0,        0.0 } };
-
-
-
 
 static float CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 2.0 },
 									{  2.0 / 2.0, -5.0 / 2.0,  4.0 / 2.0, -1.0 / 2.0 },
@@ -158,6 +179,11 @@ static void tangenteSurBSpline(CH3D** tPos, float t, float mb[4][4], Pos3D* poin
 	}
 }
 
+/* Permet de faire le produit vectorielle entre  */
+/* deux vecteurs					             */
+/* p1 : le vecteur V1		                     */
+/* p2 : le vecteur V2		                     */
+/* pRes : le vecteur resultat                    */
 static void produitVectorielle(Pos3D p1, Pos3D p2, Pos3D pRes) {
 	float x = p1.x - p2.x;
 	float y = p1.y - p2.y;
@@ -167,18 +193,27 @@ static void produitVectorielle(Pos3D p1, Pos3D p2, Pos3D pRes) {
 	pRes.z = z;
 }
 
+/* Permet de faire le produit scalaire entre	 */
+/* deux vecteurs					             */
+/* p1 : le vecteur V1		                     */
+/* p2 : le vecteur V2		                     */
 static float produitScalaire(Pos3D p1, Pos3D p2) {
 	return p1.x * p2.x + p1.y * p2.y + p1.z * p2.z;
 }
 
-
-
+/* Permet de calculer un vecteur				 */
+/* x : coordonne x du vecteur 1		                     */
+/* y : coordonne y du vecteur 1		                     */
+/* z : coordonne z du vecteur 1		                     */
+/* tx : coordonne x du vecteur 2		                     */
+/* ty : coordonne y du vecteur 2		                     */
+/* tz : coordonne z du vecteur 2	                     */
+/* r : vecteur resultat		                     */
 static void calculVecteur(float x, float y, float z, float tx, float ty, float tz, Pos3D* r) {
 	r->x = x - tx;
 	r->y = y - ty;
 	r->z = z - tz;
 }
-
 
 static void calculNormal(float x, float y, float z, float tx, float ty, float tz, float x1, float y1, float z1) {
 	//printf("%f %f %f | %f %f %f",x,y,z,tx,ty,tz);
@@ -205,7 +240,16 @@ void traceLigne(float x, float y, float z, float vx, float vy, float vz) {
 	glEnd();
 }
 
-
+/* Permet de modeliser la piste en suivant la Bspline										   */
+/* A : tableaux des positions pour faire le demi tube en respectant un cerlce trigonometrique  */
+/* B : tableaux des positions pour faire le demi tube en respectant un cerlce trigonometrique  */
+/* C : tableaux des positions pour faire le demi tube en respectant un cerlce trigonometrique  */
+/* D : tableaux des positions pour faire le demi tube en respectant un cerlce trigonometrique  */
+/* E : tableaux des positions pour faire le demi tube en respectant un cerlce trigonometrique  */
+/* F : tableaux des positions pour faire le demi tube en respectant un cerlce trigonometrique  */
+/* G : tableaux des positions pour faire le demi tube en respectant un cerlce trigonometrique  */
+/* H : tableaux des positions pour faire le demi tube en respectant un cerlce trigonometrique  */
+/* I : tableaux des positions pour faire le demi tube en respectant un cerlce trigonometrique  */
 static void modelisationPiste(Pos3D* A, Pos3D* B, Pos3D* C, Pos3D* D, Pos3D* E, Pos3D* F, Pos3D* G, Pos3D* H, Pos3D* I) {
 	int n = 500;
 	glEnable(GL_TEXTURE_2D);
@@ -286,7 +330,7 @@ static void modelisationPiste(Pos3D* A, Pos3D* B, Pos3D* C, Pos3D* D, Pos3D* E, 
 /* typePrimitive : le type de primitive OpenGL   */
 /*                 a utiliser                    */
 static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int n, GLenum typePrimitive) {
-	n = 510;
+	n = 500;
 
 	Pos3D* pts = new Pos3D[n];
 	Pos3D* tan = new Pos3D[n];
@@ -383,13 +427,6 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 	modelisationPiste(c1, c2, c3, c4, c5, c6, c7, c8, c9);
 	glPopMatrix();
 }
-
-
-
-
-
-
-
 
 /* Calcul la position d'un point sur une courbe  */
 /* B-Spline controlee par quatre sommets         */
@@ -672,15 +709,14 @@ void normalize(coord_3D* n) {
 
 
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 static void init(void) {
 	// Chagrment des textures dans le dossier Bin/image
 	chargeTexture(textureGlace, "../src/Image/glacePNG.png");
 }
-
 
 /* Platforme de lancement du boblseigh */
 void startPlateforme() {
@@ -703,31 +739,6 @@ void stopPlateforme() {
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 }
-
-
-static int nbp = 100;
-static int nbPoints = 18;
-static CH3D* tPosT[] = { new Pos3D(0.0F , 15.0F ,-50.0F ),
-						 new Pos3D(0 , -3 ,10 ),
-						 new Pos3D(0 , -9 , 30 ),
-						 new Pos3D(-3.0F , -12 , 48 ),
-						 new Pos3D(-30.0F ,-20 ,75 ),
-						 new Pos3D(30.0F , -27 , 80 ),
-						 new Pos3D(30 , -32 , 90 ),
-						 new Pos3D(0.0F , -42 ,130 ),
-						 new Pos3D(-30.0F , -49 ,150 ),
-						 new Pos3D(-40.0F , -55 , 170 ),
-						 new Pos3D(-35 , -62 , 185 ),
-						 new Pos3D(-0 ,-67 ,200 ),
-						 new Pos3D(-12 , -71 , 225 ),
-						 new Pos3D(-15 , -73 , 240),
-						 new Pos3D(-30 , -74 ,250),
-						 new Pos3D(-30 , -75 ,265 ),
-						 new Pos3D(-30 , -69 , 285.0F ),
-						 new Pos3D(-30 , -50 , 350 ),
-};
-
-
 
 /* Scene dessinee                               */
 static void scene(void) {
@@ -869,7 +880,6 @@ static void keyboard(unsigned char key, int x, int y) {
 	}
 }
 
-
 /* Fonction executee lors de l'appui            */
 /* d'une touche speciale du clavier :           */
 /*   - touches de curseur                       */
@@ -949,7 +959,6 @@ static void special(int key, int x, int y) {
 		break;
 	}
 }
-
 
 /* Fonction executee lors de l'utilisation      */
 /* de la souris sur la fenetre                  */
