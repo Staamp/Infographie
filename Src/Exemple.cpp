@@ -206,22 +206,76 @@ void traceLigne(float x, float y, float z, float vx, float vy, float vz) {
 }
 
 
-static void testsCourbe(Pos3D* A, Pos3D* B, Pos3D* C) {
-	int n = 510;
+static void modelisationPiste(Pos3D* A, Pos3D* B, Pos3D* C, Pos3D* D, Pos3D* E, Pos3D* F, Pos3D* G, Pos3D* H, Pos3D* I) {
+	int n = 500;
+	glEnable(GL_TEXTURE_2D);
 
 	glBegin(GL_QUAD_STRIP);
-	for (int i = 0; i < 510; i++) {
+	for (int i = 0; i < n; i++) {
 		glVertex3f(A[i].x, A[i].y, A[i].z);
 		glVertex3f(B[i].x, B[i].y, B[i].z);
 	}
 	glEnd();
+
 	glBegin(GL_QUAD_STRIP);
-	for (int i = 0; i < 510; i++) {
+	for (int i = 0; i < n; i++) {
 		glVertex3f(B[i].x, B[i].y, B[i].z);
 		glVertex3f(C[i].x, C[i].y, C[i].z);
 	}
 	glEnd();
+
+	glBegin(GL_QUAD_STRIP);
+	for (int i = 0; i < n; i++) {
+		glVertex3f(C[i].x, C[i].y, C[i].z);
+		glVertex3f(D[i].x, D[i].y, D[i].z);
+	}
+	glEnd();
+
+	glBegin(GL_QUAD_STRIP);
+	for (int i = 0; i < n; i++) {
+		glVertex3f(D[i].x, D[i].y, D[i].z);
+		glVertex3f(E[i].x, E[i].y, E[i].z);
+	}
+	glEnd();
+
+	glBegin(GL_QUAD_STRIP);
+	for (int i = 0; i < n; i++) {
+		glVertex3f(B[i].x, B[i].y, B[i].z);
+		glVertex3f(C[i].x, C[i].y, C[i].z);
+	}
+	glEnd();
+
+	glBegin(GL_QUAD_STRIP);
+	for (int i = 0; i < n; i++) {
+		glVertex3f(E[i].x, E[i].y, E[i].z);
+		glVertex3f(F[i].x, F[i].y, F[i].z);
+	}
+	glEnd();
+
+	glBegin(GL_QUAD_STRIP);
+	for (int i = 0; i < n; i++) {
+		glVertex3f(F[i].x, F[i].y, F[i].z);
+		glVertex3f(G[i].x, G[i].y, G[i].z);
+	}
+	glEnd();
+
+	glBegin(GL_QUAD_STRIP);
+	for (int i = 0; i < n; i++) {
+		glVertex3f(G[i].x, G[i].y, G[i].z);
+		glVertex3f(H[i].x, H[i].y, H[i].z);
+	}
+	glEnd();
+
+	glBegin(GL_QUAD_STRIP);
+	for (int i = 0; i < n; i++) {
+		glVertex3f(H[i].x, H[i].y, H[i].z);
+		glVertex3f(I[i].x, I[i].y, I[i].z);
+	}
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
 }
+
 
 /* Modelise une courbe B-Spline par morceaux     */
 /* definie par un ensemble de points de controle */
@@ -259,6 +313,21 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 	Pos3D* c1 = new Pos3D[n];
 	Pos3D* c2 = new Pos3D[n];
 	Pos3D* c3 = new Pos3D[n];
+	Pos3D* c4 = new Pos3D[n];
+	Pos3D* c5 = new Pos3D[n];
+	Pos3D* c6 = new Pos3D[n];
+	Pos3D* c7 = new Pos3D[n];
+	Pos3D* c8 = new Pos3D[n];
+	Pos3D* c9 = new Pos3D[n];
+
+	float pi54 = 5 * M_PI / 4;
+	float pi74 = 7 * M_PI / 4;
+	float pi43 = 4 * M_PI / 3;
+	float pi53 = 5 * M_PI / 3;
+	float pi116 = 11 * M_PI / 6;
+	float pi76 = 7 * M_PI / 6;
+	float pi32 = 3 * M_PI / 2;
+
 
 	for (int i = 0; i < n; i++) {
 		float d = sqrt(tan[i].x * tan[i].x + tan[i].y * tan[i].y + tan[i].z * tan[i].z);
@@ -267,19 +336,41 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		float vz = pts[i].z + tan[i].z / d;
 		traceLigne(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz);
 
-
-		c1[i].x = vx - 1;
-		c1[i].y = vy + 1;
+		c1[i].x = vx + 1;
+		c1[i].y = vy;
 		c1[i].z = vz;
 
-		c2[i].x = vx;
-		c2[i].y = vy - 1;
+		c2[i].x = vx + (cos(pi116) * 1.0);
+		c2[i].y = vy + (sin(pi116) * 1.0);
 		c2[i].z = vz;
 
-		c3[i].x = vx + 1;
-		c3[i].y = vy + 1;
+		c3[i].x = vx + (cos(pi74) * 1.0);
+		c3[i].y = vy + (sin(pi74) * 1.0);
 		c3[i].z = vz;
 
+		c4[i].x = vx + (cos(pi53) * 1.0);
+		c4[i].y = vy + (sin(pi53) * 1.0);
+		c4[i].z = vz;
+
+		c5[i].x = vx + (cos(pi32) * 1.0);
+		c5[i].y = vy + (sin(pi32) * 1.0);
+		c5[i].z = vz;
+
+		c6[i].x = vx + (cos(pi43) * 1.0);
+		c6[i].y = vy + (sin(pi43) * 1.0);
+		c6[i].z = vz;
+
+		c7[i].x = vx + (cos(pi54) * 1.0);
+		c7[i].y = vy + (sin(pi54) * 1.0);
+		c7[i].z = vz;
+
+		c8[i].x = vx + (cos(pi76) * 1.0);
+		c8[i].y = vy + (sin(pi76) * 1.0);
+		c8[i].z = vz;
+
+		c9[i].x = vx - 1;
+		c9[i].y = vy;
+		c9[i].z = vz;
 
 		Pos3D norm;
 		norm.x = pts[i].x + 0.05;
@@ -288,8 +379,9 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		traceLigne(pts[i].x, pts[i].y, pts[i].z, norm.x, norm.y, norm.z);
 		normal[i] = norm;
 	}
-	testsCourbe(c1, c2, c3);
-
+	glPushMatrix();
+	modelisationPiste(c1, c2, c3, c4, c5, c6, c7, c8, c9);
+	glPopMatrix();
 }
 
 
@@ -594,6 +686,7 @@ static void init(void) {
 void startPlateforme() {
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
+	//printf(" startp %d\n", GL_TEXTURE_2D);
 	glTranslatef(0.0F, -3.0F, 0.0F);
 	myRectangle(0.5F, 10.0F, 25.0F);
 	glPopMatrix();
