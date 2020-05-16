@@ -77,6 +77,43 @@ static float CATMULL_ROM[4][4] = { { -1.0 / 2.0,  3.0 / 2.0, -3.0 / 2.0,  1.0 / 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+/* Fonction d'initialisation des parametres     */
+/* OpenGL ne changeant pas au cours de la vie   */
+/* du programme                                 */
+/* Contient en particulier l'initialisation     */
+/* de trois textures 2D                         */
+static void chargeTexture(unsigned int textureID, char* filename) {
+	printf("CHARGE TEXTURE\n");
+	glClearColor(0.25F, 0.25F, 0.25F, 1.0F);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_NORMALIZE);
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	{ int rx;
+	int ry;
+	unsigned char* img = chargeImagePng(filename, &rx, &ry);
+	if (img) {
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+		free(img);
+		printf("Texture chargee %d\n", textureID);
+	}
+	else {
+		glDeleteTextures(1, &textureID);
+		textureID = 0;
+		printf("Texture non chargee\n");
+	} }
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+}
+
 /* Calcul la position d'un point sur une courbe  */
 /* B-Spline controlee par quatre points          */
 /* tPos : le tableau des points de controle      */
@@ -144,19 +181,14 @@ static void calculVecteur(float x, float y, float z, float tx, float ty, float t
 
 
 static void calculNormal(float x, float y, float z, float tx, float ty, float tz, float x1, float y1, float z1) {
-	
 	//printf("%f %f %f | %f %f %f",x,y,z,tx,ty,tz);
 	Pos3D v1;
-	calculVecteur(x,y,z,tx,ty,tz,&v1);
+	calculVecteur(x, y, z, tx, ty, tz, &v1);
 	//printf("  = %f %f %f", v1.x, v1.y, v1.z);
-
 	Pos3D v2;
 	calculVecteur(x, y, z, x1, y1, z1, &v2);
 	//printf("  = %f %f %f\n\n", v2.x, v2.y, v2.z);
-
 	//A partir de la nous avons deux equations qui forment un plan.
-
-
 }
 
 /* Affichage de la tangente d'un point sur une courbe */
@@ -173,6 +205,24 @@ void traceLigne(float x, float y, float z, float vx, float vy, float vz) {
 	glEnd();
 }
 
+
+static void testsCourbe(Pos3D* A, Pos3D* B, Pos3D* C) {
+	int n = 510;
+
+	glBegin(GL_QUAD_STRIP);
+	for (int i = 0; i < 510; i++) {
+		glVertex3f(A[i].x, A[i].y, A[i].z);
+		glVertex3f(B[i].x, B[i].y, B[i].z);
+	}
+	glEnd();
+	glBegin(GL_QUAD_STRIP);
+	for (int i = 0; i < 510; i++) {
+		glVertex3f(B[i].x, B[i].y, B[i].z);
+		glVertex3f(C[i].x, C[i].y, C[i].z);
+	}
+	glEnd();
+}
+
 /* Modelise une courbe B-Spline par morceaux     */
 /* definie par un ensemble de points de controle */
 /* nbPoints : le nombre de points de contrôle    */
@@ -184,13 +234,13 @@ void traceLigne(float x, float y, float z, float vx, float vy, float vz) {
 static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int n, GLenum typePrimitive) {
 	n = 510;
 
-	Pos3D *pts = new Pos3D[n];
-	Pos3D *tan = new Pos3D[n];
-	Pos3D *normal = new Pos3D[n];
+	Pos3D* pts = new Pos3D[n];
+	Pos3D* tan = new Pos3D[n];
+	Pos3D* normal = new Pos3D[n];
 
 	glBegin(typePrimitive);
 	for (int i = 0; i < n; i++) {
-		
+
 		float t = i / (n - 1.0F) * ((float)nbPoints - 3.0F);
 		int nb = (int)t;
 		if (nb == nbPoints - 3)
@@ -200,23 +250,36 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		positionSurBSpline(&tPos[nb], t - nb, mb, &point);
 		glVertex3f(point.x, point.y, point.z);
 		tangenteSurBSpline(&tPos2[nb], t - nb, mb, &tgt);
-		
+
 		pts[i] = point;
 		tan[i] = tgt;
 	}
 	glEnd();
-	
+
+	Pos3D* c1 = new Pos3D[n];
+	Pos3D* c2 = new Pos3D[n];
+	Pos3D* c3 = new Pos3D[n];
+
 	for (int i = 0; i < n; i++) {
 		float d = sqrt(tan[i].x * tan[i].x + tan[i].y * tan[i].y + tan[i].z * tan[i].z);
 		float vx = pts[i].x + tan[i].x / d;
 		float vy = pts[i].y + tan[i].y / d;
 		float vz = pts[i].z + tan[i].z / d;
 		traceLigne(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz);
-	
-		//if (i + 1 == n) {
-		//	break;
-		//}
-		//calculNormal(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz, pts[i+1].x, pts[i+1].y, pts[i+1].z);
+
+
+		c1[i].x = vx - 1;
+		c1[i].y = vy + 1;
+		c1[i].z = vz;
+
+		c2[i].x = vx;
+		c2[i].y = vy - 1;
+		c2[i].z = vz;
+
+		c3[i].x = vx + 1;
+		c3[i].y = vy + 1;
+		c3[i].z = vz;
+
 
 		Pos3D norm;
 		norm.x = pts[i].x + 0.05;
@@ -225,44 +288,16 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		traceLigne(pts[i].x, pts[i].y, pts[i].z, norm.x, norm.y, norm.z);
 		normal[i] = norm;
 	}
+	testsCourbe(c1, c2, c3);
+
 }
 
-/* Fonction d'initialisation des parametres     */
-/* OpenGL ne changeant pas au cours de la vie   */
-/* du programme                                 */
-/* Contient en particulier l'initialisation     */
-/* de trois textures 2D                         */
-static void chargeTexture(unsigned int textureID, char* filename) {
-	printf("CHARGE TEXTURE\n");
-	glClearColor(0.25F, 0.25F, 0.25F, 1.0F);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glDepthFunc(GL_LESS);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_NORMALIZE);
-	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	{ int rx;
-	int ry;
-	unsigned char* img = chargeImagePng(filename, &rx, &ry);
-	if (img) {
-		glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
-		free(img);
-		printf("Texture chargee %d\n", textureID);
-	}
-	else {
-		glDeleteTextures(1, &textureID);
-		textureID = 0;
-		printf("Texture non chargee\n");
-	} }
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-}
+
+
+
+
+
+
 
 /* Calcul la position d'un point sur une courbe  */
 /* B-Spline controlee par quatre sommets         */
