@@ -49,6 +49,7 @@ static float pz = -1.0;					// pour les cameras et glutlookat
 static int versionCamera = 0;			//changer le type de camera
 
 static int isLine = 0;					// Affichage fil de fer
+static int isNormalTan = 1;				// Affichage des tangentes et des normals en tout point de la piste
 
 static int mx;							// pour la souris
 static int mouseActive = 0;				// pour la souris
@@ -346,7 +347,9 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		Pos3D point;
 		Pos3D tgt;
 		positionSurBSpline(&tPos[nb], t - nb, mb, &point);
-		glVertex3f(point.x, point.y, point.z);
+		if (!isNormalTan) {
+			glVertex3f(point.x, point.y, point.z);
+		}
 		tangenteSurBSpline(&tPos2[nb], t - nb, mb, &tgt);
 
 		pts[i] = point;
@@ -378,7 +381,9 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		float vx = pts[i].x + tan[i].x / d;
 		float vy = pts[i].y + tan[i].y / d;
 		float vz = pts[i].z + tan[i].z / d;
-		traceLigne(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz);
+		if (!isNormalTan) {
+			traceLigne(pts[i].x, pts[i].y, pts[i].z, vx, vy, vz);
+		}
 
 		c1[i].x = vx + 1;
 		c1[i].y = vy;
@@ -420,7 +425,9 @@ static void BSpline(int nbPoints, CH3D** tPos, CH3D** tPos2, float mb[4][4], int
 		norm.x = pts[i].x + 0.05;
 		norm.y = pts[i].y + 2;
 		norm.z = pts[i].z + 0.05;
-		traceLigne(pts[i].x, pts[i].y, pts[i].z, norm.x, norm.y, norm.z);
+		if (!isNormalTan) {
+			traceLigne(pts[i].x, pts[i].y, pts[i].z, norm.x, norm.y, norm.z);
+		}
 		normal[i] = norm;
 	}
 	glPushMatrix();
@@ -694,21 +701,6 @@ static void myLuge() {
 
 
 
-/*
-void normalize(coord_3D* n) {
-	float d = (float)sqrt(n->x * n->x + n->y * n->y + n->z * n->z);
-	if (d != 0.0F) {
-		n->x /= d;
-		n->y /= d;
-		n->z /= d;
-	}
-}
-
-*/
-
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -841,6 +833,19 @@ static void keyboard(unsigned char key, int x, int y) {
 			printf("Passe en mode plein\n");
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			isLine = 0;
+			glutPostRedisplay();
+		}
+		break;
+	case 'g':
+	case 'G':
+		if (!isNormalTan) {
+			printf("Passe en mode affichage des tangentes et normales\n");
+			isNormalTan = 1;
+			glutPostRedisplay();
+		}
+		else {
+			printf("Passe en mode affichage de la piste\n");
+			isNormalTan = 0;
 			glutPostRedisplay();
 		}
 		break;
