@@ -44,8 +44,8 @@ static float ry = -182.0F;				// Rotation en y
 static float rz = 0.0F;					// Rotation en z
 
 static float px = 0.0;					// pour les cameras et glutlookat
-static float py = 1.0;					// pour les cameras et glutlookat
-static float pz = -1.0;					// pour les cameras et glutlookat
+static float py = -1.0;					// pour les cameras et glutlookat
+static float pz = 1.0;					// pour les cameras et glutlookat
 static int versionCamera = 0;			//changer le type de camera
 
 static int isLine = 0;					// Affichage fil de fer
@@ -656,6 +656,8 @@ static void linkLuge() {
 
 /* Fonction qui genere la luge*/
 static void myLuge() {
+	glPushMatrix();
+	glTranslatef(0.0F, -19.0F, 18.0F);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, brun);
 
 	glPushMatrix();
@@ -697,6 +699,7 @@ static void myLuge() {
 	mySolidCylindre(3.0F, 0.20F, 100);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
 	glPopMatrix();
+	glPopMatrix();
 }
 
 
@@ -715,19 +718,8 @@ void startPlateforme() {
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	//printf(" startp %d\n", GL_TEXTURE_2D);
-	glTranslatef(0.0F, -3.0F, 0.0F);
+	glTranslatef(0.0F, -22.0F, 18.0F);
 	myRectangle(0.5F, 10.0F, 25.0F);
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
-}
-
-/* Platforme de lancement du boblseigh */
-void stopPlateforme() {
-	glEnable(GL_TEXTURE_2D);
-	glPushMatrix();
-	glTranslatef(500.0F, -300.0F, 0.0F);
-	glScalef(30.0F, 0.5F, 100.0F);
-	mySolidCube(1.0F);
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 }
@@ -946,8 +938,8 @@ static void special(int key, int x, int y) {
 		break;
 	case GLUT_KEY_F4:
 		px = 0.0;
-		py = 1.0;
-		pz = -1.0;
+		py = -1.0;
+		pz = 1.0;
 		rx = 4.0;
 		ry = -182.0;
 		rz = 0.0;
